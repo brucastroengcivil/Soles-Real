@@ -455,6 +455,45 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
       font-size: 0.75rem;
       color: var(--text-muted);
       margin-top: 0.3rem;
+      line-height: 1.4;
+    }
+
+    .field-paste-hint {
+      display: block;
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      opacity: 0.85;
+      margin-top: 0.2rem;
+      font-style: italic;
+    }
+
+    .peru-highlight-box {
+      background: #ecfdf5;
+      border: 1px solid #a7f3d0;
+      border-radius: 8px;
+      padding: 0.65rem 0.85rem;
+      font-size: 0.825rem;
+      color: #065f46;
+      font-weight: 600;
+      margin-top: 0.85rem;
+      display: flex;
+      align-items: center;
+      gap: 0.45rem;
+    }
+
+    .peru-result-banner {
+      background: #f0fdf4;
+      border: 1px solid #bbf7d0;
+      border-radius: var(--radius);
+      padding: 0.85rem 1.15rem;
+      margin-bottom: 1.25rem;
+      font-size: 0.875rem;
+      color: #166534;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 0.75rem;
     }
 
     .fixed-note-box {
@@ -788,8 +827,9 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
         </label>
         <div class="amount-input-group">
           <span class="currency-tag">S/</span>
-          <input type="text" inputmode="decimal" id="penAmount" class="amount-input" value="1.000">
+          <input type="text" id="penAmount" class="amount-input" value="1.000" placeholder="Ex: 1.000">
         </div>
+        <span class="field-paste-hint">aceita colar com vírgula, ponto ou símbolos</span>
       </div>
       <div class="ref-val-badge" id="midMarketRefBox">
         Referência Mid-market PEN→BRL: <strong>R$ 1.520,00</strong> (100% bruto)
@@ -822,9 +862,10 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
           </div>
           <div class="input-flex-row">
             <span style="font-size:0.85rem; color:var(--text-muted);">1 PEN =</span>
-            <input type="text" inputmode="decimal" id="midPenBrl" class="form-input" value="1,52">
+            <input type="text" id="midPenBrl" class="form-input" value="1,52" placeholder="Ex: 1,52">
             <span style="font-size:0.85rem; color:var(--text-muted);">BRL</span>
           </div>
+          <span class="field-paste-hint">aceita colar com vírgula, ponto ou símbolos</span>
         </div>
 
         <div class="field-row">
@@ -838,9 +879,10 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
           </div>
           <div class="input-flex-row">
             <span style="font-size:0.85rem; color:var(--text-muted);">1 USD =</span>
-            <input type="text" inputmode="decimal" id="midUsdBrl" class="form-input" value="5,10">
+            <input type="text" id="midUsdBrl" class="form-input" value="5,10" placeholder="Ex: 5,10">
             <span style="font-size:0.85rem; color:var(--text-muted);">BRL</span>
           </div>
+          <span class="field-paste-hint">aceita colar com vírgula, ponto ou símbolos</span>
         </div>
       </div>
 
@@ -850,51 +892,96 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
           <span>🔄</span> Rota em duas etapas (PEN → USD → BRL)
         </h2>
         <div class="field-note" style="margin-top:-0.5rem; margin-bottom:0.85rem;">
-          Geralmente a mais vantajosa para valores moderados a altos.
+          Geralmente a mais vantajosa para valores moderados a altos. O app seleciona automaticamente a melhor taxa entre as casas de câmbio peruanas.
         </div>
 
+        <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:8px; padding:0.75rem; margin-bottom:1rem; font-size:0.775rem; color:#475569; line-height:1.45;">
+          💡 <strong>Nota explicativa:</strong> Use a taxa de <strong>COMPRA</strong> de cada casa (o valor que ela paga pelos seus dólares). Quanto <strong>MAIOR</strong> a taxa, mais dólares você recebe pelos seus soles.
+        </div>
+
+        <!-- 3 Casas de Câmbio no Peru -->
         <div class="field-row">
           <div class="field-header">
-            <label class="field-label" for="rateUsdPen">Taxa de compra do dólar no Peru (S/ por USD)</label>
+            <label class="field-label" for="rateKambista">Kambista — taxa de compra do dólar (S/ por US$)</label>
             <div class="ext-links">
-              <a href="https://kambista.com" target="_blank" rel="noopener noreferrer" class="ext-link">Kambista</a>
-              <a href="https://rextie.com" target="_blank" rel="noopener noreferrer" class="ext-link">Rextie</a>
-              <a href="https://tucambista.pe" target="_blank" rel="noopener noreferrer" class="ext-link">TuCambista</a>
+              <a href="https://kambista.com" target="_blank" rel="noopener noreferrer" class="ext-link">ver em kambista.com</a>
             </div>
           </div>
           <div class="input-flex-row">
             <span style="font-size:0.85rem; color:var(--text-muted);">S/ por US$:</span>
-            <input type="text" inputmode="decimal" id="rateUsdPen" class="form-input" value="3,7500">
+            <input type="text" id="rateKambista" class="form-input" value="3,34" placeholder="Ex: 3,34">
+          </div>
+          <span class="field-paste-hint">aceita colar com vírgula, ponto ou símbolos</span>
+        </div>
+
+        <div class="field-row">
+          <div class="field-header">
+            <label class="field-label" for="rateRextie">Rextie — taxa de compra do dólar (S/ por US$)</label>
+            <div class="ext-links">
+              <a href="https://rextie.com" target="_blank" rel="noopener noreferrer" class="ext-link">ver em rextie.com</a>
+            </div>
+          </div>
+          <div class="input-flex-row">
+            <span style="font-size:0.85rem; color:var(--text-muted);">S/ por US$:</span>
+            <input type="text" id="rateRextie" class="form-input" value="3,34" placeholder="Ex: 3,34">
+          </div>
+          <span class="field-paste-hint">aceita colar com vírgula, ponto ou símbolos</span>
+        </div>
+
+        <div class="field-row">
+          <div class="field-header">
+            <label class="field-label" for="rateTuCambista">TuCambista — taxa de compra do dólar (S/ por US$)</label>
+            <div class="ext-links">
+              <a href="https://tucambista.pe" target="_blank" rel="noopener noreferrer" class="ext-link">ver em tucambista.pe</a>
+            </div>
+          </div>
+          <div class="input-flex-row">
+            <span style="font-size:0.85rem; color:var(--text-muted);">S/ por US$:</span>
+            <input type="text" id="rateTuCambista" class="form-input" value="3,34" placeholder="Ex: 3,34">
+          </div>
+          <span class="field-paste-hint">aceita colar com vírgula, ponto ou símbolos</span>
+        </div>
+
+        <!-- Destaque melhor taxa do Peru -->
+        <div class="peru-highlight-box" id="bestPeruRateCard">
+          🏆 Melhor taxa de compra do dia: <strong id="bestPeruName">Kambista</strong> (<span id="bestPeruRateVal">S/ 3,34 por US$</span>)
+        </div>
+
+        <!-- Wise -->
+        <div class="field-row" style="margin-top: 1rem;">
+          <div class="field-header">
+            <label class="field-label" for="rateWiseEffective">Câmbio efetivo da Wise (BRL por US$)</label>
+            <div class="ext-links">
+              <a href="https://wise.com/br/send-money/send-money-to-brazil" target="_blank" rel="noopener noreferrer" class="ext-link">simular em wise.com</a>
+            </div>
+          </div>
+          <div class="input-flex-row">
+            <span style="font-size:0.85rem; color:var(--text-muted);">1 US$ =</span>
+            <input type="text" id="rateWiseEffective" class="form-input" value="5,13" placeholder="Ex: 5,13">
+            <span style="font-size:0.85rem; color:var(--text-muted);">BRL</span>
           </div>
           <div class="field-note">
-            💡 Use a cotação de <strong>COMPRA</strong> da casa online (a casa compra seus soles e vende USD). Esperado entre 3,0 e 4,5.
+            Simule o valor no site da Wise e copie o "câmbio efetivo (VET)" que aparece no resumo — ele já inclui a tarifa real da sua operação.
           </div>
+          <span class="field-paste-hint">aceita colar com vírgula, ponto ou símbolos</span>
         </div>
 
+        <!-- Remessa Online -->
         <div class="field-row">
           <div class="field-header">
-            <label class="field-label" for="feeWisePct">Tarifa Wise (USD → BRL)</label>
+            <label class="field-label" for="spreadRemessa">Spread da Remessa Online (%)</label>
             <div class="ext-links">
-              <a href="https://wise.com/br/send-money/send-money-to-brazil" target="_blank" rel="noopener noreferrer" class="ext-link">ver no Wise</a>
+              <a href="https://remessaonline.com.br" target="_blank" rel="noopener noreferrer" class="ext-link">ver em remessaonline.com.br</a>
             </div>
           </div>
           <div class="input-flex-row">
-            <input type="text" inputmode="decimal" id="feeWisePct" class="form-input" value="0,60">
+            <input type="text" id="spreadRemessa" class="form-input" value="1,0" placeholder="Ex: 1,0">
             <span style="font-size:0.85rem; color:var(--text-muted);">%</span>
           </div>
-        </div>
-
-        <div class="field-row">
-          <div class="field-header">
-            <label class="field-label" for="feeRemessaPct">Tarifa Remessa Online (USD → BRL)</label>
-            <div class="ext-links">
-              <a href="https://remessaonline.com.br" target="_blank" rel="noopener noreferrer" class="ext-link">ver Remessa Online</a>
-            </div>
+          <div class="field-note">
+            O spread aparece no site/app da Remessa Online ao simular (ex: 0,50%, 1,10% dependendo do plano).
           </div>
-          <div class="input-flex-row">
-            <input type="text" inputmode="decimal" id="feeRemessaPct" class="form-input" value="1,00">
-            <span style="font-size:0.85rem; color:var(--text-muted);">%</span>
-          </div>
+          <span class="field-paste-hint">aceita colar com vírgula, ponto ou símbolos</span>
         </div>
 
         <div class="fixed-note-box">
@@ -925,14 +1012,15 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
           <div class="input-flex-row">
             <div class="input-subfield">
               <span class="sub-label">Câmbio (BRL por PEN)</span>
-              <input type="text" inputmode="decimal" id="rateGlobal66" class="form-input" value="1,4855">
+              <input type="text" id="rateGlobal66" class="form-input" value="1,4855" placeholder="Ex: 1,4855">
             </div>
             <div class="input-subfield">
               <span class="sub-label">Tarifa fixa (S/)</span>
-              <input type="text" inputmode="decimal" id="feeGlobal66" class="form-input" value="30,00">
+              <input type="text" id="feeGlobal66" class="form-input" value="30,00" placeholder="Ex: 30,00">
             </div>
           </div>
-          <div class="field-note">Tarifa ~S/ 30 a cada S/ 1.000 (primeiro envio costuma ser grátis).</div>
+          <div class="field-note">Copie a taxa que o app/site mostra ao simular o seu valor — ela já inclui o spread e a tarifa. Tarifa fixa ~S/ 30.</div>
+          <span class="field-paste-hint">aceita colar com vírgula, ponto ou símbolos</span>
         </div>
 
         <!-- Remesas.com -->
@@ -946,14 +1034,15 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
           <div class="input-flex-row">
             <div class="input-subfield">
               <span class="sub-label">Câmbio (BRL por PEN)</span>
-              <input type="text" inputmode="decimal" id="rateRemesas" class="form-input" value="1,4960">
+              <input type="text" id="rateRemesas" class="form-input" value="1,4960" placeholder="Ex: 1,4960">
             </div>
             <div class="input-subfield">
               <span class="sub-label">Tarifa fixa (S/)</span>
-              <input type="text" inputmode="decimal" id="feeRemesas" class="form-input" value="0,00">
+              <input type="text" id="feeRemesas" class="form-input" value="0,00" placeholder="Ex: 0,00">
             </div>
           </div>
-          <div class="field-note">Empresa registrada na SBS do Peru; recebe via Pix diretamente.</div>
+          <div class="field-note">Copie a taxa que o app/site mostra ao simular o seu valor — ela já inclui o spread e a tarifa. Sem tarifa fixa.</div>
+          <span class="field-paste-hint">aceita colar com vírgula, ponto ou símbolos</span>
         </div>
 
         <!-- Paysend -->
@@ -967,14 +1056,15 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
           <div class="input-flex-row">
             <div class="input-subfield">
               <span class="sub-label">Câmbio (BRL por PEN)</span>
-              <input type="text" inputmode="decimal" id="ratePaysend" class="form-input" value="1,4545">
+              <input type="text" id="ratePaysend" class="form-input" value="1,4545" placeholder="Ex: 1,4545">
             </div>
             <div class="input-subfield">
               <span class="sub-label">Tarifa fixa (S/)</span>
-              <input type="text" inputmode="decimal" id="feePaysend" class="form-input" value="5,00">
+              <input type="text" id="feePaysend" class="form-input" value="5,00" placeholder="Ex: 5,00">
             </div>
           </div>
-          <div class="field-note">Tarifa fixa baixa (~S/ 5), porém spread cambial embutido maior.</div>
+          <div class="field-note">Copie a taxa que o app/site mostra ao simular o seu valor — ela já inclui o spread e a tarifa. Tarifa fixa ~S/ 5.</div>
+          <span class="field-paste-hint">aceita colar com vírgula, ponto ou símbolos</span>
         </div>
 
         <!-- Western Union -->
@@ -988,14 +1078,15 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
           <div class="input-flex-row">
             <div class="input-subfield">
               <span class="sub-label">Câmbio (BRL por PEN)</span>
-              <input type="text" inputmode="decimal" id="rateWU" class="form-input" value="1,4245">
+              <input type="text" id="rateWU" class="form-input" value="1,4245" placeholder="Ex: 1,4245">
             </div>
             <div class="input-subfield">
               <span class="sub-label">Tarifa fixa (S/)</span>
-              <input type="text" inputmode="decimal" id="feeWU" class="form-input" value="49,90">
+              <input type="text" id="feeWU" class="form-input" value="49,90" placeholder="Ex: 49,90">
             </div>
           </div>
-          <div class="field-note">Rede capilar física e app, custo total costuma passar de 4,5%.</div>
+          <div class="field-note">Copie a taxa que o app/site mostra ao simular o seu valor — ela já inclui o spread e a tarifa. Tarifa fixa ~S/ 49,90.</div>
+          <span class="field-paste-hint">aceita colar com vírgula, ponto ou símbolos</span>
         </div>
 
       </div>
@@ -1045,7 +1136,18 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
 
   <!-- RESULTADOS -->
   <div id="resultsSection">
-    <!-- BANNER MELHOR OPÇÃO -->
+    <!-- BANNER CASA DE CÂMBIO VENCEDORA NO PERU -->
+    <div class="peru-result-banner" id="peruResultBanner">
+      <div>
+        <span>🇵🇪 <strong>Disputa de compra em Lima:</strong> </span>
+        <span id="peruWinnerBadge">Kambista venceu com S/ 3,34 por US$</span>
+      </div>
+      <div id="peruGainBadge" style="font-weight:700;">
+        Ganho de +R$ 0,00 vs. pior casa
+      </div>
+    </div>
+
+    <!-- BANNER MELHOR OPÇÃO GERAL -->
     <div class="winner-banner" id="winnerBanner">
       <div class="winner-icon">🏆</div>
       <div class="winner-details">
@@ -1123,9 +1225,11 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
     penAmount: '1.000',
     midPenBrl: '1,52',
     midUsdBrl: '5,10',
-    rateUsdPen: '3,7500',
-    feeWisePct: '0,60',
-    feeRemessaPct: '1,00',
+    rateKambista: '3,34',
+    rateRextie: '3,34',
+    rateTuCambista: '3,34',
+    rateWiseEffective: '5,13',
+    spreadRemessa: '1,0',
     rateGlobal66: '1,4855',
     feeGlobal66: '30,00',
     rateRemesas: '1,4960',
@@ -1137,15 +1241,15 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
   };
 
   /**
-   * Parser numérico robusto para formatos pt-BR e internacionais.
+   * Parser numérico inteligente com limpeza automática de moedas, espaços e separadores.
    * Regras:
-   * - Se contém vírgula E ponto: o último separador que aparece é o decimal ("1.527,18" -> 1527.18; "1,5240" -> 1.524; "5.1919" -> 5.1919).
-   * - Se contém só vírgula: vírgula é decimal ("1,52" -> 1.52).
-   * - Se contém só ponto:
-   *     Para campos de TAXA (isRate=true), ponto é sempre decimal ("5.1919" -> 5.1919).
-   *     Para quantia (isRate=false), se tiver exatamente 3 dígitos após o ponto ("1.000"), trata como milhar -> 1000.
+   * - Limpa moedas: S/, R$, US$, USD, PEN, BRL
+   * - Limpa espaços (inclusive invisíveis)
+   * - Se contém vírgula E ponto: o último separador é o decimal ("1.527,18" -> 1527.18; "5.1919" -> 5.1919; "1,5240" -> 1.524)
+   * - Só vírgula = decimal
+   * - Só ponto = decimal (para montante inteiro como "1.000", se tiver 3 dígitos finais em milhar puro sem vírgula, converte apropriadamente)
    */
-  function parseNumeroBR(valor, isRate = false) {
+  function parseNumeroBR(valor, isAmount = false) {
     if (typeof valor === 'number') {
       return isNaN(valor) ? 0 : valor;
     }
@@ -1153,7 +1257,11 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
     let str = String(valor).trim();
     if (!str) return 0;
 
-    // Remover caracteres não numéricos exceto vírgula, ponto e sinal negativo
+    // Limpar símbolos de moeda (S/, R$, US$, USD, PEN, BRL)
+    str = str.replace(/(S\/|R\$|US\$|USD|PEN|BRL)/gi, '');
+    // Limpar espaços (inclusive espaços invisíveis no início/fim e no meio)
+    str = str.replace(/[\s\u00A0\u200B\u200C\u200D\uFEFF]/g, '');
+    // Manter apenas dígitos, vírgula, ponto e sinal
     str = str.replace(/[^\d.,-]/g, '');
     if (!str) return 0;
 
@@ -1164,22 +1272,21 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
       const lastComma = str.lastIndexOf(',');
       const lastDot = str.lastIndexOf('.');
       if (lastComma > lastDot) {
-        // Ex: "1.527,18" -> ponto é milhar, vírgula é decimal
+        // Ex: "1.527,18" -> último é vírgula (decimal), pontos são milhares
         str = str.replace(/\./g, '').replace(',', '.');
       } else {
-        // Ex: "1,527.18" -> vírgula é milhar, ponto é decimal
+        // Ex: "1,527.18" ou "1.524,0" -> último é ponto (decimal), vírgulas são milhares
         str = str.replace(/,/g, '');
       }
     } else if (hasComma) {
-      // Ex: "1,5240" -> vírgula é decimal
+      // Ex: "1,5240" ou "3,34" -> só vírgula = decimal
       str = str.replace(',', '.');
     } else if (hasDot) {
-      // Apenas ponto presente
-      if (!isRate && /^\d{1,3}\.\d{3}$/.test(str)) {
-        // Ex: "1.000" para quantia/valor -> 1000
+      // Só ponto: para quantia padrão inteira tipo "1.000", interpreta como 1000
+      if (isAmount && /^\d{1,3}\.\d{3}$/.test(str)) {
         str = str.replace('.', '');
       } else {
-        // Ex: "5.1919" ou "1.524" -> ponto é decimal
+        // Ex: "5.1919" -> só ponto = decimal
       }
     }
 
@@ -1187,75 +1294,72 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
     return isNaN(num) ? 0 : num;
   }
 
-  // Formata número com vírgula decimal pt-BR
-  function formatPtBrInput(num, decimals = 4) {
-    if (typeof num !== 'number' || isNaN(num)) return '';
-    return num.toFixed(decimals).replace('.', ',');
-  }
-
-  // Definição das regras de validação por campo
+  // Definição das regras de validação atualizadas por campo
   const FIELD_VALIDATIONS = {
     midPenBrl: {
       name: 'PEN → BRL mid-market',
       min: 1.0,
       max: 2.5,
-      isRate: true,
       routesAffected: ['Wise (2 etapas)', 'Remessa Online (2 etapas)', 'Global66', 'Remesas.com', 'Paysend', 'Western Union']
     },
     midUsdBrl: {
       name: 'USD → BRL mid-market',
       min: 3.5,
       max: 7.0,
-      isRate: true,
-      routesAffected: ['Wise (2 etapas)', 'Remessa Online (2 etapas)']
+      routesAffected: ['Remessa Online (2 etapas)']
     },
-    rateUsdPen: {
-      name: 'Taxa de compra do dólar no Peru (soles por dólar)',
+    rateKambista: {
+      name: 'Kambista — taxa de compra do dólar',
       min: 3.0,
       max: 4.5,
-      isRate: true,
       routesAffected: ['Wise (2 etapas)', 'Remessa Online (2 etapas)']
     },
-    feeWisePct: {
-      name: 'Tarifa Wise (%)',
-      min: 0,
-      max: 10,
-      isRate: false,
+    rateRextie: {
+      name: 'Rextie — taxa de compra do dólar',
+      min: 3.0,
+      max: 4.5,
+      routesAffected: ['Wise (2 etapas)', 'Remessa Online (2 etapas)']
+    },
+    rateTuCambista: {
+      name: 'TuCambista — taxa de compra do dólar',
+      min: 3.0,
+      max: 4.5,
+      routesAffected: ['Wise (2 etapas)', 'Remessa Online (2 etapas)']
+    },
+    rateWiseEffective: {
+      name: 'Câmbio efetivo da Wise (BRL por US$)',
+      min: 3.5,
+      max: 7.0,
       routesAffected: ['Wise (2 etapas)']
     },
-    feeRemessaPct: {
-      name: 'Tarifa Remessa Online (%)',
+    spreadRemessa: {
+      name: 'Spread da Remessa Online (%)',
       min: 0,
-      max: 10,
-      isRate: false,
+      max: 5,
       routesAffected: ['Remessa Online (2 etapas)']
     },
     rateGlobal66: {
-      name: 'Taxa direta Global66',
+      name: 'Câmbio direto Global66',
       min: 1.0,
       max: 2.0,
-      isRate: true,
       routesAffected: ['Global66']
     },
     rateRemesas: {
-      name: 'Taxa direta Remesas.com',
+      name: 'Câmbio direto Remesas.com',
       min: 1.0,
       max: 2.0,
-      isRate: true,
       routesAffected: ['Remesas.com']
     },
     ratePaysend: {
-      name: 'Taxa direta Paysend',
+      name: 'Câmbio direto Paysend',
       min: 1.0,
       max: 2.0,
-      isRate: true,
       routesAffected: ['Paysend']
     },
     rateWU: {
-      name: 'Taxa direta Western Union',
+      name: 'Câmbio direto Western Union',
       min: 1.0,
       max: 2.0,
-      isRate: true,
       routesAffected: ['Western Union']
     }
   };
@@ -1333,22 +1437,312 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
     }
   }
 
-  function getFieldValue(id, isRate = false) {
+    // VALIDAÇÃO VISÍVEL DOS CAMPOS
+    // ==========================================
+    const validationErrors = [];
+    const invalidFields = new Set();
+    const excludedRoutes = new Set();
+
+    Object.keys(FIELD_VALIDATIONS).forEach(fieldId => {
+      const rule = FIELD_VALIDATIONS[fieldId];
+      const val = getFieldValue(fieldId, rule.isRate);
+      const inputEl = document.getElementById(fieldId);
+
+      if (val < rule.min || val > rule.max || isNaN(val)) {
+        invalidFields.add(fieldId);
+        if (inputEl) inputEl.classList.add('is-invalid');
+        const minStr = rule.min.toString().replace('.', ',');
+        const maxStr = rule.max.toString().replace('.', ',');
+        validationErrors.push(`⚠️ Verifique o campo <strong>${rule.name}</strong> — valor fora da faixa esperada (${minStr} a ${maxStr}).`);
+        if (rule.routesAffected) {
+          rule.routesAffected.forEach(r => excludedRoutes.add(r));
+        }
+      } else {
+        if (inputEl) inputEl.classList.remove('is-invalid');
+      }
+    });
+
+    // Validar também penAmount
+    const penInput = document.getElementById('penAmount');
+    if (pen <= 0) {
+      invalidFields.add('penAmount');
+      if (penInput) penInput.classList.add('is-invalid');
+      validationErrors.push('⚠️ Verifique o campo <strong>Valor a converter</strong> — digite um valor maior que zero.');
+    } else {
+      if (penInput) penInput.classList.remove('is-invalid');
+    }
+
+    // Exibir/ocultar caixa de alertas de validação
+    const alertBox = document.getElementById('validationAlert');
+    const alertList = document.getElementById('validationAlertList');
+    if (alertBox && alertList) {
+      if (validationErrors.length > 0) {
+        alertList.innerHTML = validationErrors.map(msg => `<li>${msg}</li>`).join('');
+        alertBox.style.display = 'block';
+      } else {
+        alertBox.style.display = 'none';
+        alertList.innerHTML = '';
+      }
+    }
+
+    // Atualiza caixa de referência mid-market
+    const totalMidMarketBrl = pen * midPenBrl;
+    const refBox = document.getElementById('midMarketRefBox');
+    if (refBox) {
+      refBox.innerHTML = `Referência Mid-market PEN→BRL: <strong>${fmtBrl.format(totalMidMarketBrl)}</strong> (sem taxas/spread)`;
+    }
+
+    const routes = [];
+
+    // 1. Rota 2 etapas: Wise (PEN -> USD -> BRL)
+    if (rateUsdPen > 0 && midUsdBrl > 0) {
+      const usdEquiv = pen / rateUsdPen;
+      const wiseGrossBrl = usdEquiv * midUsdBrl;
+      const wiseFeeBrl = wiseGrossBrl * (feeWisePct / 100);
+      const wiseIofBrl = wiseGrossBrl * iofPct;
+      const wiseNetBrl = Math.max(0, wiseGrossBrl - wiseFeeBrl - wiseIofBrl);
+
+      routes.push({
+        name: 'Wise (2 etapas)',
+        time: ROUTE_CONFIG['Wise (2 etapas)'].timeText,
+        tempoHoras: ROUTE_CONFIG['Wise (2 etapas)'].tempoHoras,
+        type: 'twostep',
+        typeLabel: 'S/ → USD → BRL via Wise',
+        notes: `S/ ${pen.toLocaleString('pt-BR')} ÷ ${rateUsdPen.toString().replace('.', ',')} = $${usdEquiv.toFixed(2)} USD`,
+        netBrl: wiseNetBrl,
+        isInvalid: excludedRoutes.has('Wise (2 etapas)')
+      });
+
+      // 2. Rota 2 etapas: Remessa Online (PEN -> USD -> BRL)
+      const roGrossBrl = usdEquiv * midUsdBrl;
+      const roFeeBrl = roGrossBrl * (feeRemessaPct / 100);
+      const roIofBrl = roGrossBrl * iofPct;
+      const roNetBrl = Math.max(0, roGrossBrl - roFeeBrl - roIofBrl);
+
+      routes.push({
+        name: 'Remessa Online (2 etapas)',
+        time: ROUTE_CONFIG['Remessa Online (2 etapas)'].timeText,
+        tempoHoras: ROUTE_CONFIG['Remessa Online (2 etapas)'].tempoHoras,
+        type: 'twostep',
+        typeLabel: 'S/ → USD → BRL via Remessa Online',
+        notes: `S/ ${pen.toLocaleString('pt-BR')} ÷ ${rateUsdPen.toString().replace('.', ',')} = $${usdEquiv.toFixed(2)} USD`,
+        netBrl: roNetBrl,
+        isInvalid: excludedRoutes.has('Remessa Online (2 etapas)')
+      });
+    }
+
+    // Função para rotas diretas:
+    function calcDirectRoute(name, rateId, feeId, sublabel) {
+      const rate = getFieldValue(rateId, true);
+      const feePen = getFieldValue(feeId, false);
+      
+      const netPen = Math.max(0, pen - feePen);
+      const grossBrl = netPen * rate;
+      const iofBrl = grossBrl * iofPct;
+      const netBrl = Math.max(0, grossBrl - iofBrl);
+
+      const cfg = ROUTE_CONFIG[name] || { timeText: '1 dia útil', tempoHoras: 24 };
+
+      return {
+        name: name,
+        time: cfg.timeText,
+        tempoHoras: cfg.tempoHoras,
+        type: 'direct',
+        typeLabel: sublabel,
+        notes: feePen > 0 ? `Tarifa fixa de S/ ${feePen.toFixed(2).replace('.', ',')} deduzida` : 'Sem tarifa fixa',
+        netBrl: netBrl,
+        isInvalid: excludedRoutes.has(name)
+      };
+    }
+=======
+  function getFieldValue(id, isAmount = false) {
     const el = document.getElementById(id);
     if (!el) return 0;
-    return parseNumeroBR(el.value, isRate);
+    return parseNumeroBR(el.value, isAmount);
   }
 
   function calculateAll() {
-    const pen = Math.max(0, getFieldValue('penAmount', false));
-    const midPenBrl = getFieldValue('midPenBrl', true);
-    const midUsdBrl = getFieldValue('midUsdBrl', true);
-    const rateUsdPen = getFieldValue('rateUsdPen', true);
-    const feeWisePct = getFieldValue('feeWisePct', false);
-    const feeRemessaPct = getFieldValue('feeRemessaPct', false);
-    const iofPct = 0.0038;
+    const pen = Math.max(0, getFieldValue('penAmount', true));
+    const midPenBrl = getFieldValue('midPenBrl', false);
+    const midUsdBrl = getFieldValue('midUsdBrl', false);
+
+    // 3 casas de compra no Peru
+    const rateKambista = getFieldValue('rateKambista', false);
+    const rateRextie = getFieldValue('rateRextie', false);
+    const rateTuCambista = getFieldValue('rateTuCambista', false);
+
+    // Wise e Remessa Online
+    const rateWiseEffective = getFieldValue('rateWiseEffective', false);
+    const spreadRemessa = getFieldValue('spreadRemessa', false);
+
+    const iofPct = 0.0038; // IOF 0,38%
 
     // ==========================================
+    // SELEÇÃO DA MELHOR CASA DE COMPRA NO PERU
+    // ==========================================
+    const peruHouses = [
+      { name: 'Kambista', rate: rateKambista, fieldId: 'rateKambista' },
+      { name: 'Rextie', rate: rateRextie, fieldId: 'rateRextie' },
+      { name: 'TuCambista', rate: rateTuCambista, fieldId: 'rateTuCambista' }
+    ];
+
+    // Ordenar da maior taxa para a menor (quanto maior a taxa, melhor)
+    const sortedPeru = [...peruHouses].sort((a, b) => b.rate - a.rate);
+    const bestPeru = sortedPeru[0];
+    const worstPeru = sortedPeru[sortedPeru.length - 1];
+
+    // Atualizar badge de destaque na aba Cotações
+    const bestPeruNameEl = document.getElementById('bestPeruName');
+    const bestPeruRateValEl = document.getElementById('bestPeruRateVal');
+    if (bestPeruNameEl && bestPeruRateValEl) {
+      bestPeruNameEl.textContent = bestPeru.name;
+      bestPeruRateValEl.textContent = `S/ ${bestPeru.rate.toString().replace('.', ',')} por US$`;
+    }
+
+    // ==========================================
+    // VALIDAÇÃO VISÍVEL DOS CAMPOS
+    // ==========================================
+    const validationErrors = [];
+    const invalidFields = new Set();
+    const excludedRoutes = new Set();
+
+    Object.keys(FIELD_VALIDATIONS).forEach(fieldId => {
+      const rule = FIELD_VALIDATIONS[fieldId];
+      const val = getFieldValue(fieldId, false);
+      const inputEl = document.getElementById(fieldId);
+
+      if (val < rule.min || val > rule.max || isNaN(val)) {
+        invalidFields.add(fieldId);
+        if (inputEl) inputEl.classList.add('is-invalid');
+        const minStr = rule.min.toString().replace('.', ',');
+        const maxStr = rule.max.toString().replace('.', ',');
+        validationErrors.push(`⚠️ Verifique o campo <strong>${rule.name}</strong> — valor fora da faixa esperada (${minStr} a ${maxStr}).`);
+        if (rule.routesAffected) {
+          rule.routesAffected.forEach(r => excludedRoutes.add(r));
+        }
+      } else {
+        if (inputEl) inputEl.classList.remove('is-invalid');
+      }
+    });
+
+    // Validar também penAmount
+    const penInput = document.getElementById('penAmount');
+    if (pen <= 0) {
+      invalidFields.add('penAmount');
+      if (penInput) penInput.classList.add('is-invalid');
+      validationErrors.push('⚠️ Verifique o campo <strong>Valor a converter</strong> — digite um valor maior que zero.');
+    } else {
+      if (penInput) penInput.classList.remove('is-invalid');
+    }
+
+    // Exibir/ocultar caixa de alertas de validação
+    const alertBox = document.getElementById('validationAlert');
+    const alertList = document.getElementById('validationAlertList');
+    if (alertBox && alertList) {
+      if (validationErrors.length > 0) {
+        alertList.innerHTML = validationErrors.map(msg => `<li>${msg}</li>`).join('');
+        alertBox.style.display = 'block';
+      } else {
+        alertBox.style.display = 'none';
+        alertList.innerHTML = '';
+      }
+    }
+
+    // Atualiza caixa de referência mid-market
+    const totalMidMarketBrl = pen * midPenBrl;
+    const refBox = document.getElementById('midMarketRefBox');
+    if (refBox) {
+      refBox.innerHTML = `Referência Mid-market PEN→BRL: <strong>${fmtBrl.format(totalMidMarketBrl)}</strong> (sem taxas/spread)`;
+    }
+
+    const routes = [];
+
+    // ==========================================
+    // ROTA EM 2 ETAPAS: MELHOR CASA PERUANA
+    // ==========================================
+    const bestPeruRate = bestPeru.rate;
+    const worstPeruRate = worstPeru.rate;
+
+    if (bestPeruRate > 0) {
+      // 1. Rota Wise
+      // PEN ÷ melhor taxa de compra = USD; USD × câmbio efetivo Wise = BRL; aplicar IOF 0,38%
+      const usdWise = pen / bestPeruRate;
+      const wiseGrossBrl = usdWise * rateWiseEffective;
+      const wiseNetBrl = Math.max(0, wiseGrossBrl * (1 - iofPct));
+
+      routes.push({
+        name: `Wise (2 etapas via ${bestPeru.name})`,
+        time: ROUTE_CONFIG['Wise (2 etapas)'].timeText,
+        tempoHoras: ROUTE_CONFIG['Wise (2 etapas)'].tempoHoras,
+        type: 'twostep',
+        typeLabel: `S/ → US$ via ${bestPeru.name} → BRL via Wise`,
+        notes: `S/ ${pen.toLocaleString('pt-BR')} ÷ ${bestPeruRate.toString().replace('.', ',')} = $${usdWise.toFixed(2)} USD × VET ${rateWiseEffective.toString().replace('.', ',')}`,
+        netBrl: wiseNetBrl,
+        isInvalid: excludedRoutes.has('Wise (2 etapas)')
+      });
+
+      // 2. Rota Remessa Online
+      // PEN ÷ melhor taxa de compra = USD; USD × mid-market USD→BRL × (1 − spread/100); aplicar IOF 0,38%
+      const usdRO = pen / bestPeruRate;
+      const roGrossBrl = usdRO * midUsdBrl * (1 - (spreadRemessa / 100));
+      const roNetBrl = Math.max(0, roGrossBrl * (1 - iofPct));
+
+      routes.push({
+        name: `Remessa Online (2 etapas via ${bestPeru.name})`,
+        time: ROUTE_CONFIG['Remessa Online (2 etapas)'].timeText,
+        tempoHoras: ROUTE_CONFIG['Remessa Online (2 etapas)'].tempoHoras,
+        type: 'twostep',
+        typeLabel: `S/ → US$ via ${bestPeru.name} → BRL via Remessa Online`,
+        notes: `S/ ${pen.toLocaleString('pt-BR')} ÷ ${bestPeruRate.toString().replace('.', ',')} = $${usdRO.toFixed(2)} USD (spread ${spreadRemessa.toString().replace('.', ',')}%)`,
+        netBrl: roNetBrl,
+        isInvalid: excludedRoutes.has('Remessa Online (2 etapas)')
+      });
+    }
+
+    // Ganho em reais no Peru em relação à pior das três casas (usando a cotação do Wise de referência)
+    let peruGainBrl = 0;
+    if (bestPeruRate > 0 && worstPeruRate > 0 && rateWiseEffective > 0) {
+      const bestUsd = pen / bestPeruRate;
+      const worstUsd = pen / worstPeruRate;
+      // diferença em reais líquido
+      peruGainBrl = Math.abs((bestUsd - worstUsd) * rateWiseEffective * (1 - iofPct));
+    }
+
+    const peruWinnerBadge = document.getElementById('peruWinnerBadge');
+    const peruGainBadge = document.getElementById('peruGainBadge');
+    if (peruWinnerBadge && peruGainBadge) {
+      peruWinnerBadge.textContent = `${bestPeru.name} venceu com S/ ${bestPeru.rate.toString().replace('.', ',')} por US$`;
+      if (bestPeru.name === worstPeru.name || peruGainBrl < 0.01) {
+        peruGainBadge.textContent = `As 3 casas têm a mesma cotação`;
+      } else {
+        peruGainBadge.textContent = `Ganho de +${fmtBrl.format(peruGainBrl)} vs. ${worstPeru.name}`;
+      }
+    }
+
+    // ==========================================
+    // ROTAS DIRETAS (PEN → BRL)
+    // ==========================================
+    function calcDirectRoute(name, rateId, feeId, sublabel) {
+      const rate = getFieldValue(rateId, false);
+      const feePen = getFieldValue(feeId, false);
+      
+      const netPen = Math.max(0, pen - feePen);
+      const grossBrl = netPen * rate;
+      const netBrl = Math.max(0, grossBrl * (1 - iofPct));
+
+      const cfg = ROUTE_CONFIG[name] || { timeText: '1 dia útil', tempoHoras: 24 };
+
+      return {
+        name: name,
+        time: cfg.timeText,
+        tempoHoras: cfg.tempoHoras,
+        type: 'direct',
+        typeLabel: sublabel,
+        notes: feePen > 0 ? `Tarifa fixa de S/ ${feePen.toFixed(2).replace('.', ',')} deduzida` : 'Sem tarifa fixa (taxa efetiva)',
+        netBrl: netBrl,
+        isInvalid: excludedRoutes.has(name)
+      };
+    }==========================================
     // VALIDAÇÃO VISÍVEL DOS CAMPOS
     // ==========================================
     const validationErrors = [];
@@ -1681,6 +2075,9 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
     const inputs = document.querySelectorAll('input.form-input, input.amount-input');
     inputs.forEach(input => {
       input.addEventListener('input', calculateAll);
+      input.addEventListener('paste', () => {
+        setTimeout(calculateAll, 10);
+      });
       input.addEventListener('change', calculateAll);
       input.addEventListener('blur', calculateAll);
     });
