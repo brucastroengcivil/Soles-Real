@@ -1,0 +1,1814 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Comparador Soles → Reais</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/basecoat-css@1.0.2/dist/basecoat.cdn.min.css">
+  <style>
+/* Skip artifact shell — fixed styles served beside every artifact.
+   Complements basecoat; artifacts override --accent for their own identity. */
+:root {
+  color-scheme: light dark;
+  --accent: #2563eb;
+  --accent-contrast: #ffffff;
+  --accent-text: color-mix(in srgb, var(--accent) 72%, #000);
+  --bg: #f8f9fb;
+  --surface: #ffffff;
+  --text: #14171f;
+  --text-muted: #5b6472;
+  --border: rgba(20, 23, 31, 0.10);
+  --radius: 10px;
+  --shadow: 0 1px 3px rgba(20, 23, 31, 0.08);
+  --space: 16px;
+}
+/* Theme resolution. Without data-theme the viewer's system preference decides,
+   as it always did. With it, the artifact's own choice wins in BOTH directions:
+   a page that hardcodes one palette must not be handed the opposite set of
+   tokens by the machine it happens to be opened on. The dark values appear
+   twice because a media query cannot be folded into a selector list.
+   The attribute sits inside :where() so these blocks keep the specificity of a
+   bare :root — the page's own <style> is linked after this file and must go on
+   overriding any token it wants, exactly as it could before. */
+@media (prefers-color-scheme: dark) {
+  :root:where(:not([data-theme="light"])) {
+    --accent-text: color-mix(in srgb, var(--accent) 78%, #fff);
+    --bg: #101318;
+    --surface: #181c23;
+    --text: #eef1f6;
+    --text-muted: #9aa4b2;
+    --border: rgba(238, 241, 246, 0.12);
+    --shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+  }
+}
+:root:where([data-theme="dark"]) {
+  color-scheme: dark;
+  --accent-text: color-mix(in srgb, var(--accent) 78%, #fff);
+  --bg: #101318;
+  --surface: #181c23;
+  --text: #eef1f6;
+  --text-muted: #9aa4b2;
+  --border: rgba(238, 241, 246, 0.12);
+  --shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+}
+:root:where([data-theme="light"]) { color-scheme: light; }
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+}
+img { max-width: 100%; display: block; }
+
+.shell-container { max-width: 1100px; margin: 0 auto; padding: 0 20px; }
+.shell-section { padding: calc(var(--space) * 2) 0; }
+.shell-grid { display: grid; gap: var(--space); grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
+.shell-toolbar { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-bottom: var(--space); }
+.shell-footer { padding: 24px 0 40px; color: var(--text-muted); font-size: 13px; }
+
+.shell-hero { padding: calc(var(--space) * 3) 0 calc(var(--space) * 2); }
+.shell-hero h1 { font-size: clamp(26px, 4vw, 40px); line-height: 1.15; margin: 0 0 10px; text-wrap: balance; }
+.shell-hero p { color: var(--text-muted); max-width: 60ch; margin: 0; }
+
+.panel {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: var(--space);
+}
+
+.kpi { display: flex; flex-direction: column; gap: 4px; }
+.kpi .kpi-value { font-size: 28px; font-weight: 650; line-height: 1.1; }
+.kpi .kpi-label { font-size: 13px; color: var(--text-muted); }
+.kpi .kpi-delta { font-size: 12.5px; font-weight: 600; }
+.kpi .kpi-delta.up { color: #0a8f3c; }
+.kpi .kpi-delta.down { color: #cf3131; }
+
+table.shell-table { border-collapse: collapse; width: 100%; font-size: 14px; }
+table.shell-table th {
+  text-align: left; font-size: 11.5px; letter-spacing: 0.05em; text-transform: uppercase;
+  color: var(--text-muted); font-weight: 600;
+}
+table.shell-table th, table.shell-table td { padding: 9px 12px 9px 0; border-bottom: 1px solid var(--border); }
+table.shell-table td.num, table.shell-table th.num { text-align: right; font-variant-numeric: tabular-nums; }
+table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 6%, transparent); }
+
+.chart-box { width: 100%; min-height: 220px; }
+.chart-box svg { width: 100%; height: auto; display: block; }
+
+.muted { color: var(--text-muted); }
+.accent { color: var(--accent-text); }
+.shell-badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 12px; font-weight: 600; padding: 3px 10px; border-radius: 999px;
+  background: color-mix(in srgb, var(--accent) 12%, transparent); color: var(--accent-text);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .shell-fade { animation: shell-fade 400ms ease both; }
+  @keyframes shell-fade { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+}
+
+</style>
+  
+  <style>
+    :root {
+      --accent: #047857;
+      --accent-text: #065f46;
+      --accent-contrast: #ffffff;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+
+    /* Tabs pill navigation */
+    .tabs-nav {
+      display: flex;
+      gap: 0.5rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: 0.35rem;
+      border-radius: 999px;
+      margin-bottom: 1.5rem;
+      width: fit-content;
+      max-width: 100%;
+    }
+
+    .tab-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.55rem 1.25rem;
+      border-radius: 999px;
+      border: none;
+      background: transparent;
+      color: var(--text-muted);
+      font-size: 0.925rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      white-space: nowrap;
+    }
+
+    .tab-btn:hover {
+      color: var(--text);
+      background: rgba(0, 0, 0, 0.04);
+    }
+
+    .tab-btn.active {
+      background: var(--accent);
+      color: var(--accent-contrast);
+      box-shadow: 0 2px 8px rgba(4, 120, 87, 0.25);
+    }
+
+    .tab-badge {
+      display: inline-block;
+      font-size: 0.72rem;
+      padding: 0.1rem 0.45rem;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.25);
+      color: inherit;
+    }
+
+    .tab-btn:not(.active) .tab-badge {
+      background: var(--border);
+      color: var(--text);
+    }
+
+    .tab-pane {
+      display: none;
+    }
+
+    .tab-pane.active {
+      display: block;
+      animation: fadeIn 0.2s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Mode selector (Auto vs Manual) */
+    .mode-selector-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 0.85rem 1.25rem;
+      margin-bottom: 1.25rem;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.75rem;
+    }
+
+    .mode-switch-group {
+      display: inline-flex;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 0.2rem;
+      gap: 0.2rem;
+    }
+
+    .mode-opt-btn {
+      border: none;
+      background: transparent;
+      padding: 0.35rem 0.85rem;
+      border-radius: 6px;
+      font-size: 0.825rem;
+      font-weight: 600;
+      cursor: pointer;
+      color: var(--text-muted);
+      transition: all 0.15s ease;
+    }
+
+    .mode-opt-btn.active {
+      background: var(--accent);
+      color: var(--accent-contrast);
+    }
+
+    .sync-status {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+
+    .sync-btn {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--accent-text);
+      padding: 0.25rem 0.6rem;
+      border-radius: 6px;
+      font-size: 0.775rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+      transition: all 0.15s ease;
+    }
+
+    .sync-btn:hover {
+      background: #f0fdf4;
+      border-color: #86efac;
+    }
+
+    .form-input.is-auto {
+      background-color: #f1f5f9;
+      color: #334155;
+      cursor: not-allowed;
+      border-style: dashed;
+    }
+
+    .time-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.25rem;
+      font-size: 0.75rem;
+      color: #0369a1;
+      background: #f0f9ff;
+      border: 1px solid #bae6fd;
+      border-radius: 6px;
+      padding: 0.2rem 0.5rem;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .app-wrap {
+      max-width: 1080px;
+      margin: 0 auto;
+      padding: 1.5rem 1rem 3.5rem;
+    }
+
+    .header-card {
+      background: linear-gradient(135deg, #064e3b 0%, #047857 65%, #059669 100%);
+      color: #ffffff;
+      border-radius: var(--radius);
+      padding: 1.75rem 1.5rem;
+      margin-bottom: 1.5rem;
+      box-shadow: 0 4px 14px rgba(4, 120, 87, 0.2);
+    }
+
+    .header-card h1 {
+      margin: 0 0 0.4rem 0;
+      font-size: 1.75rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: #ffffff;
+    }
+
+    .header-card p {
+      margin: 0 0 0.75rem 0;
+      font-size: 0.95rem;
+      opacity: 0.92;
+      color: #ecfdf5;
+    }
+
+    .date-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      font-size: 0.8rem;
+      background: rgba(255, 255, 255, 0.18);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      border-radius: 999px;
+      padding: 0.25rem 0.75rem;
+      color: #ffffff;
+    }
+
+    .main-amount-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.25rem 1.5rem;
+      margin-bottom: 1.5rem;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+    }
+
+    .amount-input-group {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      position: relative;
+    }
+
+    .currency-tag {
+      font-weight: 700;
+      font-size: 1.1rem;
+      color: var(--accent-text);
+      background: #ecfdf5;
+      border: 1px solid #a7f3d0;
+      border-radius: 6px;
+      padding: 0.45rem 0.75rem;
+    }
+
+    .amount-input {
+      font-size: 1.35rem;
+      font-weight: 700;
+      width: 170px;
+      padding: 0.4rem 0.65rem;
+      border: 2px solid var(--border);
+      border-radius: 8px;
+      background: var(--bg);
+      color: var(--text);
+    }
+
+    .amount-input:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(4, 120, 87, 0.15);
+    }
+
+    .ref-val-badge {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      background: var(--bg);
+      padding: 0.5rem 0.75rem;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+    }
+
+    .grid-sections {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.25rem;
+      margin-bottom: 1.75rem;
+    }
+
+    @media (min-width: 860px) {
+      .grid-sections {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    .section-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.25rem;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
+    }
+
+    .section-title {
+      font-size: 1.05rem;
+      font-weight: 700;
+      margin: 0 0 1rem 0;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: var(--text);
+    }
+
+    .field-row {
+      margin-bottom: 1rem;
+      padding-bottom: 0.85rem;
+      border-bottom: 1px dashed var(--border);
+    }
+
+    .field-row:last-child {
+      margin-bottom: 0;
+      padding-bottom: 0;
+      border-bottom: none;
+    }
+
+    .field-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 0.5rem;
+      margin-bottom: 0.35rem;
+      flex-wrap: wrap;
+    }
+
+    .field-label {
+      font-weight: 600;
+      font-size: 0.875rem;
+      color: var(--text);
+    }
+
+    .ext-links {
+      display: inline-flex;
+      gap: 0.4rem;
+      font-size: 0.75rem;
+    }
+
+    .ext-link {
+      color: var(--accent-text);
+      text-decoration: none;
+      background: #f0fdf4;
+      border: 1px solid #bbf7d0;
+      padding: 0.15rem 0.4rem;
+      border-radius: 4px;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.2rem;
+      font-weight: 500;
+      transition: all 0.15s ease;
+    }
+
+    .ext-link:hover {
+      background: #dcfce7;
+      text-decoration: underline;
+    }
+
+    .input-flex-row {
+      display: flex;
+      gap: 0.5rem;
+      align-items: center;
+    }
+
+    .input-subfield {
+      flex: 1;
+    }
+
+    .sub-label {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      margin-bottom: 0.2rem;
+      display: block;
+    }
+
+    .form-input {
+      width: 100%;
+      padding: 0.45rem 0.6rem;
+      font-size: 0.9rem;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      background: var(--bg);
+      color: var(--text);
+      box-sizing: border-box;
+      font-weight: 600;
+    }
+
+    .form-input:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 2px rgba(4, 120, 87, 0.15);
+    }
+
+    .field-note {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-top: 0.3rem;
+    }
+
+    .fixed-note-box {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 6px;
+      padding: 0.6rem 0.75rem;
+      font-size: 0.775rem;
+      color: #475569;
+      margin-top: 0.85rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .winner-banner {
+      background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%);
+      border: 2px solid #34d399;
+      border-radius: var(--radius);
+      padding: 1.25rem 1.5rem;
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      box-shadow: 0 4px 12px rgba(5, 150, 105, 0.12);
+    }
+
+    .winner-icon {
+      font-size: 2.25rem;
+      line-height: 1;
+    }
+
+    .winner-details h2 {
+      margin: 0 0 0.25rem 0;
+      font-size: 1.2rem;
+      font-weight: 800;
+      color: #064e3b;
+    }
+
+    .winner-details p {
+      margin: 0;
+      font-size: 0.925rem;
+      color: #065f46;
+    }
+
+    .results-table-wrap {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow-x: auto;
+      margin-bottom: 1.75rem;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
+    }
+
+    .results-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.875rem;
+      text-align: left;
+    }
+
+    .results-table th {
+      background: #f8fafc;
+      padding: 0.8rem 0.9rem;
+      border-bottom: 2px solid var(--border);
+      font-weight: 700;
+      color: #334155;
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+
+    .results-table td {
+      padding: 0.85rem 0.9rem;
+      border-bottom: 1px solid var(--border);
+      vertical-align: middle;
+    }
+
+    .results-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .results-table tr.is-winner {
+      background: #f0fdf4;
+      font-weight: 600;
+    }
+
+    .results-table tr.is-winner td {
+      border-color: #bbf7d0;
+    }
+
+    .rank-pill {
+      display: inline-block;
+      width: 24px;
+      height: 24px;
+      line-height: 24px;
+      text-align: center;
+      border-radius: 50%;
+      font-size: 0.75rem;
+      font-weight: 700;
+      background: #e2e8f0;
+      color: #475569;
+    }
+
+    .rank-pill.top-1 {
+      background: #059669;
+      color: #ffffff;
+    }
+    .rank-pill.top-2 {
+      background: #10b981;
+      color: #ffffff;
+    }
+
+    .service-badge {
+      display: inline-block;
+      font-size: 0.72rem;
+      font-weight: 600;
+      padding: 0.15rem 0.45rem;
+      border-radius: 4px;
+      margin-top: 0.2rem;
+    }
+
+    .badge-twostep {
+      background: #e0f2fe;
+      color: #0369a1;
+      border: 1px solid #bae6fd;
+    }
+
+    .badge-direct {
+      background: #f1f5f9;
+      color: #475569;
+      border: 1px solid #cbd5e1;
+    }
+
+    .val-highlight {
+      font-weight: 700;
+      font-size: 1rem;
+      color: #064e3b;
+    }
+
+    .val-loss {
+      color: #dc2626;
+      font-weight: 600;
+      font-size: 0.825rem;
+    }
+
+    .val-loss.zero {
+      color: #059669;
+      font-weight: 700;
+    }
+
+    /* Priority filter */
+    .priority-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 0.85rem 1.15rem;
+      margin-bottom: 1.25rem;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.75rem;
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.03);
+    }
+
+    .priority-label-wrap {
+      display: flex;
+      align-items: center;
+      gap: 0.45rem;
+      font-size: 0.875rem;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .priority-options-group {
+      display: inline-flex;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      padding: 0.25rem;
+      gap: 0.25rem;
+      flex-wrap: wrap;
+    }
+
+    .priority-btn {
+      border: none;
+      background: transparent;
+      padding: 0.45rem 0.95rem;
+      border-radius: 999px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      color: var(--text-muted);
+      transition: all 0.18s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      white-space: nowrap;
+    }
+
+    .priority-btn:hover {
+      color: var(--text);
+      background: rgba(0, 0, 0, 0.04);
+    }
+
+    .priority-btn.active {
+      background: var(--accent);
+      color: var(--accent-contrast);
+      box-shadow: 0 2px 6px rgba(4, 120, 87, 0.25);
+    }
+
+    .score-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 0.8rem;
+      padding: 0.2rem 0.55rem;
+      border-radius: 6px;
+      background: #eff6ff;
+      color: #1d4ed8;
+      border: 1px solid #bfdbfe;
+    }
+
+    .cost-pct-pill {
+      display: inline-block;
+      padding: 0.2rem 0.5rem;
+      border-radius: 999px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+
+    .cost-pct-low {
+      background: #dcfce7;
+      color: #166534;
+    }
+
+    .cost-pct-mid {
+      background: #fef9c3;
+      color: #854d0e;
+    }
+
+    .cost-pct-high {
+      background: #fee2e2;
+      color: #991b1b;
+    }
+
+    .calc-btn-row {
+      display: flex;
+      justify-content: flex-end;
+      margin-bottom: 1.25rem;
+      gap: 0.75rem;
+    }
+
+    .tips-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+      gap: 1rem;
+      margin-top: 2rem;
+    }
+
+    .tip-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1rem 1.15rem;
+      font-size: 0.825rem;
+      color: var(--text-muted);
+      line-height: 1.45;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.02);
+      border-top: 3px solid var(--accent);
+    }
+
+    .tip-card strong {
+      color: var(--text);
+      display: block;
+      margin-bottom: 0.25rem;
+      font-size: 0.85rem;
+    }
+
+    @media print {
+      .ext-links, .calc-btn-row, .ext-link {
+        display: none !important;
+      }
+      body {
+        background: #fff;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<div class="app-wrap">
+  <!-- CABEÇALHO -->
+  <header class="header-card">
+    <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 0.75rem;">
+      <div>
+        <h1>Comparador Soles → Reais</h1>
+        <p>Digite as cotações do dia e descubra a rota com o maior retorno líquido no Brasil</p>
+      </div>
+      <div class="date-badge" id="currentDateBadge">
+        📅 <span id="currentDateText">Carregando data...</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- TABS DE NAVEGAÇÃO -->
+  <nav class="tabs-nav" role="tablist" aria-label="Abas de visualização">
+    <button type="button" class="tab-btn active" id="tabBtnQuotes" role="tab" aria-selected="true" aria-controls="paneQuotes" onclick="switchTab('quotes')">
+      ⚙️ Cotações <span class="tab-badge">Entradas</span>
+    </button>
+    <button type="button" class="tab-btn" id="tabBtnResults" role="tab" aria-selected="false" aria-controls="paneResults" onclick="switchTab('results')">
+      📊 Resultado <span class="tab-badge" id="bestResultTabBadge">R$ --</span>
+    </button>
+  </nav>
+
+  <!-- ================= TAB 1: COTAÇÕES ================= -->
+  <section class="tab-pane active" id="paneQuotes" role="tabpanel" aria-labelledby="tabBtnQuotes">
+    <!-- MODO AUTOMÁTICO VS MANUAL -->
+    <div class="mode-selector-card">
+      <div style="display:flex; align-items:center; gap:0.65rem; flex-wrap:wrap;">
+        <span style="font-size:0.875rem; font-weight:700; color:var(--text);">Cotações de referência:</span>
+        <div class="mode-switch-group" role="radiogroup" aria-label="Modo de cotação">
+          <button type="button" class="mode-opt-btn active" id="btnModeAuto" onclick="setMode('auto')">
+            ⚡ Automático (API)
+          </button>
+          <button type="button" class="mode-opt-btn" id="btnModeManual" onclick="setMode('manual')">
+            ✏️ Manual
+          </button>
+        </div>
+      </div>
+
+      <div class="sync-status">
+        <span id="syncStatusText">Buscando cotações automáticas...</span>
+        <button type="button" class="sync-btn" id="btnRefreshRates" onclick="fetchExchangeRates(true)" title="Recarregar cotações de PEN/BRL e USD/BRL">
+          🔄 Atualizar cotações
+        </button>
+      </div>
+    </div>
+
+    <!-- VALOR A CONVERTER -->
+    <div class="main-amount-card">
+      <div>
+        <label for="penAmount" style="display:block; font-size:0.875rem; font-weight:700; margin-bottom:0.35rem; color:var(--text);">
+          Valor a converter (em Soles peruanos)
+        </label>
+        <div class="amount-input-group">
+          <span class="currency-tag">S/</span>
+          <input type="number" id="penAmount" class="amount-input" value="1000" min="10" step="50">
+        </div>
+      </div>
+      <div class="ref-val-badge" id="midMarketRefBox">
+        Referência Mid-market PEN→BRL: <strong>R$ 1.520,00</strong> (100% bruto)
+      </div>
+    </div>
+
+    <!-- AVISO SOBRE TAXAS LOCAIS -->
+    <div style="background:#fffbeb; border:1px solid #fde68a; border-radius:8px; padding:0.65rem 0.9rem; font-size:0.8rem; color:#92400e; margin-bottom:1.25rem; display:flex; align-items:center; gap:0.5rem;">
+      <span>💡</span>
+      <span><strong>Nota:</strong> Taxas de casas de câmbio peruanas e apps precisam ser conferidas manualmente nos links indicados — elas mudam ao longo do dia.</span>
+    </div>
+
+  <!-- SEÇÕES DE COTAÇÕES -->
+  <div class="grid-sections">
+    <!-- Câmbios de Referência & Rota 2 Etapas -->
+    <div>
+      <div class="section-card" style="margin-bottom: 1.25rem;">
+        <h2 class="section-title">
+          <span>🌐</span> Cotações de referência do dia (Mid-market)
+        </h2>
+        
+        <div class="field-row">
+          <div class="field-header">
+            <label class="field-label" for="midPenBrl">Câmbio comercial PEN → BRL</label>
+            <div class="ext-links">
+              <a href="https://wise.com/br/currency-converter/pen-to-brl-rate" target="_blank" rel="noopener noreferrer" class="ext-link" title="Consultar câmbio oficial no Wise">
+                ↗ ver no Wise
+              </a>
+            </div>
+          </div>
+          <div class="input-flex-row">
+            <span style="font-size:0.85rem; color:var(--text-muted);">1 PEN =</span>
+            <input type="number" step="0.0001" id="midPenBrl" class="form-input" value="1.52">
+            <span style="font-size:0.85rem; color:var(--text-muted);">BRL</span>
+          </div>
+        </div>
+
+        <div class="field-row">
+          <div class="field-header">
+            <label class="field-label" for="midUsdBrl">Câmbio comercial USD → BRL</label>
+            <div class="ext-links">
+              <a href="https://wise.com/br/currency-converter/usd-to-brl-rate" target="_blank" rel="noopener noreferrer" class="ext-link" title="Consultar USD/BRL no Wise">
+                ↗ ver no Wise
+              </a>
+            </div>
+          </div>
+          <div class="input-flex-row">
+            <span style="font-size:0.85rem; color:var(--text-muted);">1 USD =</span>
+            <input type="number" step="0.0001" id="midUsdBrl" class="form-input" value="5.10">
+            <span style="font-size:0.85rem; color:var(--text-muted);">BRL</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- SEÇÃO ROTA EM DUAS ETAPAS -->
+      <div class="section-card">
+        <h2 class="section-title">
+          <span>🔄</span> Rota em duas etapas (PEN → USD → BRL)
+        </h2>
+        <div class="field-note" style="margin-top:-0.5rem; margin-bottom:0.85rem;">
+          Geralmente a mais vantajosa para valores moderados a altos.
+        </div>
+
+        <div class="field-row">
+          <div class="field-header">
+            <label class="field-label" for="rateUsdPen">Taxa de compra do dólar no Peru (S/ por USD)</label>
+            <div class="ext-links">
+              <a href="https://kambista.com" target="_blank" rel="noopener noreferrer" class="ext-link">Kambista</a>
+              <a href="https://rextie.com" target="_blank" rel="noopener noreferrer" class="ext-link">Rextie</a>
+              <a href="https://tucambista.pe" target="_blank" rel="noopener noreferrer" class="ext-link">TuCambista</a>
+            </div>
+          </div>
+          <div class="input-flex-row">
+            <span style="font-size:0.85rem; color:var(--text-muted);">S/ por US$:</span>
+            <input type="number" step="0.0001" id="rateUsdPen" class="form-input" value="3.34">
+          </div>
+          <div class="field-note">
+            💡 Use a cotação de <strong>COMPRA</strong> da casa online (a casa compra seus soles e vende USD).
+          </div>
+        </div>
+
+        <div class="field-row">
+          <div class="field-header">
+            <label class="field-label" for="feeWisePct">Tarifa Wise (USD → BRL)</label>
+            <div class="ext-links">
+              <a href="https://wise.com/br/send-money/send-money-to-brazil" target="_blank" rel="noopener noreferrer" class="ext-link">ver no Wise</a>
+            </div>
+          </div>
+          <div class="input-flex-row">
+            <input type="number" step="0.01" id="feeWisePct" class="form-input" value="0.60">
+            <span style="font-size:0.85rem; color:var(--text-muted);">%</span>
+          </div>
+        </div>
+
+        <div class="field-row">
+          <div class="field-header">
+            <label class="field-label" for="feeRemessaPct">Tarifa Remessa Online (USD → BRL)</label>
+            <div class="ext-links">
+              <a href="https://remessaonline.com.br" target="_blank" rel="noopener noreferrer" class="ext-link">ver Remessa Online</a>
+            </div>
+          </div>
+          <div class="input-flex-row">
+            <input type="number" step="0.01" id="feeRemessaPct" class="form-input" value="1.00">
+            <span style="font-size:0.85rem; color:var(--text-muted);">%</span>
+          </div>
+        </div>
+
+        <div class="fixed-note-box">
+          <span>ℹ️</span>
+          <span><strong>IOF de 0,38%</strong> incide legalmente sobre a entrada de recursos no Brasil e já é calculado automaticamente em todas as opções.</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- SEÇÃO ROTAS DIRETAS -->
+    <div>
+      <div class="section-card">
+        <h2 class="section-title">
+          <span>⚡</span> Rotas diretas (Soles → Reais)
+        </h2>
+        <div class="field-note" style="margin-top:-0.5rem; margin-bottom:0.85rem;">
+          Envio direto de PEN para conta Pix ou bancária no Brasil.
+        </div>
+
+        <!-- Global66 -->
+        <div class="field-row">
+          <div class="field-header">
+            <label class="field-label">Global66</label>
+            <div class="ext-links">
+              <a href="https://global66.com/enviar-dinero/PEN/BRL" target="_blank" rel="noopener noreferrer" class="ext-link">ver Global66</a>
+            </div>
+          </div>
+          <div class="input-flex-row">
+            <div class="input-subfield">
+              <span class="sub-label">Câmbio (BRL por PEN)</span>
+              <input type="number" step="0.0001" id="rateGlobal66" class="form-input" value="1.4855">
+            </div>
+            <div class="input-subfield">
+              <span class="sub-label">Tarifa fixa (S/)</span>
+              <input type="number" step="0.1" id="feeGlobal66" class="form-input" value="30.00">
+            </div>
+          </div>
+          <div class="field-note">Tarifa ~S/ 30 a cada S/ 1.000 (primeiro envio costuma ser grátis).</div>
+        </div>
+
+        <!-- Remesas.com -->
+        <div class="field-row">
+          <div class="field-header">
+            <label class="field-label">Remesas.com</label>
+            <div class="ext-links">
+              <a href="https://remesas.com/enviar-dinero-de-peru-a-brasil" target="_blank" rel="noopener noreferrer" class="ext-link">ver Remesas.com</a>
+            </div>
+          </div>
+          <div class="input-flex-row">
+            <div class="input-subfield">
+              <span class="sub-label">Câmbio (BRL por PEN)</span>
+              <input type="number" step="0.0001" id="rateRemesas" class="form-input" value="1.4960">
+            </div>
+            <div class="input-subfield">
+              <span class="sub-label">Tarifa fixa (S/)</span>
+              <input type="number" step="0.1" id="feeRemesas" class="form-input" value="0.00">
+            </div>
+          </div>
+          <div class="field-note">Empresa registrada na SBS do Peru; recebe via Pix diretamente.</div>
+        </div>
+
+        <!-- Paysend -->
+        <div class="field-row">
+          <div class="field-header">
+            <label class="field-label">Paysend</label>
+            <div class="ext-links">
+              <a href="https://paysend.com" target="_blank" rel="noopener noreferrer" class="ext-link">ver Paysend</a>
+            </div>
+          </div>
+          <div class="input-flex-row">
+            <div class="input-subfield">
+              <span class="sub-label">Câmbio (BRL por PEN)</span>
+              <input type="number" step="0.0001" id="ratePaysend" class="form-input" value="1.4545">
+            </div>
+            <div class="input-subfield">
+              <span class="sub-label">Tarifa fixa (S/)</span>
+              <input type="number" step="0.1" id="feePaysend" class="form-input" value="5.00">
+            </div>
+          </div>
+          <div class="field-note">Tarifa fixa baixa (~S/ 5), porém spread cambial embutido maior.</div>
+        </div>
+
+        <!-- Western Union -->
+        <div class="field-row">
+          <div class="field-header">
+            <label class="field-label">Western Union</label>
+            <div class="ext-links">
+              <a href="https://westernunion.com" target="_blank" rel="noopener noreferrer" class="ext-link">ver Western Union</a>
+            </div>
+          </div>
+          <div class="input-flex-row">
+            <div class="input-subfield">
+              <span class="sub-label">Câmbio (BRL por PEN)</span>
+              <input type="number" step="0.0001" id="rateWU" class="form-input" value="1.4245">
+            </div>
+            <div class="input-subfield">
+              <span class="sub-label">Tarifa fixa (S/)</span>
+              <input type="number" step="0.1" id="feeWU" class="form-input" value="49.90">
+            </div>
+          </div>
+          <div class="field-note">Rede capilar física e app, custo total costuma passar de 4,5%.</div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- BOTAO RECALCULAR / IR PARA RESULTADOS -->
+  <div class="calc-btn-row">
+    <button type="button" class="btn" onclick="resetDefaults()" style="background:#f1f5f9; border:1px solid #cbd5e1; color:#475569; padding:0.5rem 1rem; border-radius:6px; font-weight:600; cursor:pointer;">
+      Restaurar Padrões
+    </button>
+    <button type="button" class="btn btn-primary" onclick="calculateAndGoResults()" style="background:var(--accent); color:var(--accent-contrast); border:none; padding:0.55rem 1.4rem; border-radius:6px; font-weight:700; cursor:pointer; box-shadow:0 2px 6px rgba(4,120,87,0.3); display:inline-flex; align-items:center; gap:0.4rem;">
+      <span>Calcular e Ver Resultado</span> <span>→</span>
+    </button>
+  </div>
+  </section>
+
+  <!-- ================= TAB 2: RESULTADOS ================= -->
+  <section class="tab-pane" id="paneResults" role="tabpanel" aria-labelledby="tabBtnResults">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; flex-wrap: wrap; gap: 0.5rem;">
+      <button type="button" onclick="switchTab('quotes')" class="ext-link" style="font-size:0.85rem; padding:0.35rem 0.75rem; cursor:pointer;">
+        ← Voltar e ajustar cotações
+      </button>
+      <div id="resultsSummaryVal" style="font-size:0.85rem; color:var(--text-muted);">
+        Calculando para S/ 1.000...
+      </div>
+    </div>
+
+    <!-- FILTRO DE PRIORIDADE -->
+    <div class="priority-card">
+      <div class="priority-label-wrap">
+        <span>🎯</span>
+        <span>Prioridade de recomendação:</span>
+      </div>
+      <div class="priority-options-group" role="radiogroup" aria-label="Prioridade de ordenação">
+        <button type="button" class="priority-btn" id="btnPrioCheapest" onclick="setPriority('cheapest')" role="radio" aria-checked="false">
+          💰 Câmbio mais barato
+        </button>
+        <button type="button" class="priority-btn" id="btnPrioFastest" onclick="setPriority('fastest')" role="radio" aria-checked="false">
+          ⚡ Tempo mais rápido
+        </button>
+        <button type="button" class="priority-btn active" id="btnPrioBalanced" onclick="setPriority('balanced')" role="radio" aria-checked="true">
+          ⚖️ Equilibrado (os dois)
+        </button>
+      </div>
+    </div>
+
+  <!-- RESULTADOS -->
+  <div id="resultsSection">
+    <!-- BANNER MELHOR OPÇÃO -->
+    <div class="winner-banner" id="winnerBanner">
+      <div class="winner-icon">🏆</div>
+      <div class="winner-details">
+        <h2 id="winnerTitle">Calculando melhor opção...</h2>
+        <p id="winnerDesc">Preencha as cotações acima para verificar o resultado.</p>
+      </div>
+    </div>
+
+    <!-- TABELA COMPARATIVA -->
+    <div class="results-table-wrap">
+      <table class="results-table" id="resultsTable">
+        <thead>
+          <tr>
+            <th style="width: 48px; text-align: center;">#</th>
+            <th>Serviço / Rota</th>
+            <th>Tempo estimado</th>
+            <th>Câmbio Efetivo</th>
+            <th>Valor Recebido (BRL)</th>
+            <th>Custo Total (%)</th>
+            <th id="thColScore" style="display: table-cell;">Nota Equilíbrio</th>
+            <th>Diferença vs. Melhor</th>
+          </tr>
+        </thead>
+        <tbody id="resultsTableBody">
+          <!-- Linhas renderizadas via JS -->
+        </tbody>
+      </table>
+    </div>
+  </div>
+  </section>
+
+  <!-- DICAS FIXAS NO RODAPÉ -->
+  <footer class="tips-grid">
+    <div class="tip-card">
+      <strong>🏦 Evite bancos e aeroportos</strong>
+      Trocar soles por dólares em agência bancária física ou no Aeroporto Jorge Chávez gera spread de 3% a 5% a mais de perda.
+    </div>
+    <div class="tip-card">
+      <strong>📊 Compare Kambista, Rextie e TuCambista</strong>
+      As plataformas online peruanas disputam centavos. A melhor taxa de compra varia diariamente entre elas pela manhã.
+    </div>
+    <div class="tip-card">
+      <strong>📑 Guarde o comprovante para o IR</strong>
+      Mantenha os recibos bancários de Lima e do Brasil para justificar remessas de mesma titularidade na declaração anual.
+    </div>
+    <div class="tip-card">
+      <strong>⚠️ Confirme antes de aprovar</strong>
+      Os valores calculados são estimativas fiéis. Sempre verifique o resumo final de débito e IOF na tela do aplicativo antes de transferir.
+    </div>
+  </footer>
+</div>
+
+<script>
+  // Formatadores pt-BR
+  const fmtBrl = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' });
+  const fmtNum = new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 4, maximumFractionDigits: 4 });
+  const fmtPct = new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+  // Tempos estimados por rota (texto visível e horas para ordenação)
+  const ROUTE_CONFIG = {
+    'Wise (2 etapas)': { timeText: '1–2 dias úteis', tempoHoras: 36 },
+    'Remessa Online (2 etapas)': { timeText: '1–2 dias úteis', tempoHoras: 36 },
+    'Global66': { timeText: 'Minutos a 1 dia', tempoHoras: 12 },
+    'Remesas.com': { timeText: 'Minutos a horas', tempoHoras: 3 },
+    'Paysend': { timeText: 'Minutos', tempoHoras: 0.5 },
+    'Western Union': { timeText: 'Minutos', tempoHoras: 1 }
+  };
+
+  // Estado da aplicação
+  let currentMode = 'auto'; // 'auto' | 'manual'
+  let activeTab = 'quotes';  // 'quotes' | 'results'
+  let currentPriority = 'balanced'; // 'cheapest' | 'fastest' | 'balanced'
+
+  // Valores padrão
+  const DEFAULTS = {
+    penAmount: 1000,
+    midPenBrl: 1.52,
+    midUsdBrl: 5.10,
+    rateUsdPen: 3.34,
+    feeWisePct: 0.60,
+    feeRemessaPct: 1.00,
+    rateGlobal66: 1.4855,
+    feeGlobal66: 30.00,
+    rateRemesas: 1.4960,
+    feeRemesas: 0.00,
+    ratePaysend: 1.4545,
+    feePaysend: 5.00,
+    rateWU: 1.4245,
+    feeWU: 49.90
+  };
+
+  // Controle de Abas
+  function switchTab(tabName) {
+    activeTab = tabName;
+    const tabQuotes = document.getElementById('tabBtnQuotes');
+    const tabResults = document.getElementById('tabBtnResults');
+    const paneQuotes = document.getElementById('paneQuotes');
+    const paneResults = document.getElementById('paneResults');
+
+    if (tabName === 'quotes') {
+      tabQuotes.classList.add('active');
+      tabQuotes.setAttribute('aria-selected', 'true');
+      tabResults.classList.remove('active');
+      tabResults.setAttribute('aria-selected', 'false');
+      paneQuotes.classList.add('active');
+      paneResults.classList.remove('active');
+    } else {
+      tabResults.classList.add('active');
+      tabResults.setAttribute('aria-selected', 'true');
+      tabQuotes.classList.remove('active');
+      tabQuotes.setAttribute('aria-selected', 'false');
+      paneResults.classList.add('active');
+      paneQuotes.classList.remove('active');
+    }
+  }
+
+  function calculateAndGoResults() {
+    calculateAll();
+    switchTab('results');
+  }
+
+  // Controle da Prioridade de recomendação
+  function setPriority(priority) {
+    currentPriority = priority;
+    const btnCheapest = document.getElementById('btnPrioCheapest');
+    const btnFastest = document.getElementById('btnPrioFastest');
+    const btnBalanced = document.getElementById('btnPrioBalanced');
+
+    [btnCheapest, btnFastest, btnBalanced].forEach(b => {
+      if (b) {
+        b.classList.remove('active');
+        b.setAttribute('aria-checked', 'false');
+      }
+    });
+
+    if (priority === 'cheapest' && btnCheapest) {
+      btnCheapest.classList.add('active');
+      btnCheapest.setAttribute('aria-checked', 'true');
+    } else if (priority === 'fastest' && btnFastest) {
+      btnFastest.classList.add('active');
+      btnFastest.setAttribute('aria-checked', 'true');
+    } else if (btnBalanced) {
+      btnBalanced.classList.add('active');
+      btnBalanced.setAttribute('aria-checked', 'true');
+    }
+
+    calculateAll();
+  }
+
+  // Controle do Modo Automático / Manual
+  function setMode(mode) {
+    currentMode = mode;
+    const btnAuto = document.getElementById('btnModeAuto');
+    const btnManual = document.getElementById('btnModeManual');
+    const inputPenBrl = document.getElementById('midPenBrl');
+    const inputUsdBrl = document.getElementById('midUsdBrl');
+    const btnRefresh = document.getElementById('btnRefreshRates');
+
+    if (mode === 'auto') {
+      btnAuto.classList.add('active');
+      btnManual.classList.remove('active');
+      inputPenBrl.readOnly = true;
+      inputUsdBrl.readOnly = true;
+      inputPenBrl.classList.add('is-auto');
+      inputUsdBrl.classList.add('is-auto');
+      inputPenBrl.title = 'Preenchido automaticamente pela API comercial';
+      inputUsdBrl.title = 'Preenchido automaticamente pela API comercial';
+      btnRefresh.style.display = 'inline-flex';
+      fetchExchangeRates();
+    } else {
+      btnManual.classList.add('active');
+      btnAuto.classList.remove('active');
+      inputPenBrl.readOnly = false;
+      inputUsdBrl.readOnly = false;
+      inputPenBrl.classList.remove('is-auto');
+      inputUsdBrl.classList.remove('is-auto');
+      inputPenBrl.title = '';
+      inputUsdBrl.title = '';
+      btnRefresh.style.display = 'none';
+      const statusEl = document.getElementById('syncStatusText');
+      if (statusEl) {
+        statusEl.innerHTML = '✏️ <em>Modo manual ativo (digite as cotações desejadas)</em>';
+      }
+    }
+  }
+
+  // Busca de cotações automáticas via API pública sem chave
+  async function fetchExchangeRates(isUserClick = false) {
+    if (currentMode !== 'auto') return;
+
+    const statusEl = document.getElementById('syncStatusText');
+    const btnRefresh = document.getElementById('btnRefreshRates');
+    if (statusEl) {
+      statusEl.textContent = '⏳ Buscando cotações da API...';
+    }
+    if (btnRefresh) {
+      btnRefresh.disabled = true;
+      btnRefresh.style.opacity = '0.6';
+    }
+
+    try {
+      // Buscar PEN -> BRL e USD -> BRL em paralelo
+      const [resPen, resUsd] = await Promise.all([
+        fetch('https://open.er-api.com/v6/latest/PEN'),
+        fetch('https://open.er-api.com/v6/latest/USD')
+      ]);
+
+      if (!resPen.ok || !resUsd.ok) {
+        throw new Error('Falha na resposta HTTP da API de câmbio');
+      }
+
+      const dataPen = await resPen.json();
+      const dataUsd = await resUsd.json();
+
+      const penBrl = dataPen && dataPen.rates ? dataPen.rates.BRL : null;
+      const usdBrl = dataUsd && dataUsd.rates ? dataUsd.rates.BRL : null;
+
+      if (!penBrl || !usdBrl) {
+        throw new Error('Taxas BRL não encontradas na resposta');
+      }
+
+      const inputPenBrl = document.getElementById('midPenBrl');
+      const inputUsdBrl = document.getElementById('midUsdBrl');
+
+      if (inputPenBrl) inputPenBrl.value = parseFloat(penBrl).toFixed(4);
+      if (inputUsdBrl) inputUsdBrl.value = parseFloat(usdBrl).toFixed(4);
+
+      // Formatar data/hora retornada pela API
+      let dateText = '';
+      if (dataPen.time_last_update_utc) {
+        try {
+          const apiDate = new Date(dataPen.time_last_update_utc);
+          dateText = apiDate.toLocaleString('pt-BR', { dateStyle: 'short', timeStyle: 'short' });
+        } catch {
+          dateText = dataPen.time_last_update_utc.slice(0, 16);
+        }
+      }
+
+      if (statusEl) {
+        statusEl.innerHTML = `✅ Cotações atualizadas automaticamente ${dateText ? `(${dateText})` : ''}`;
+      }
+
+      calculateAll();
+    } catch (err) {
+      console.warn('Erro ao obter cotações automáticas:', err);
+      if (statusEl) {
+        statusEl.innerHTML = `⚠️ Falha ao buscar cotações online. Mantendo valores atuais — você pode mudar para <strong style="cursor:pointer; text-decoration:underline;" onclick="setMode('manual')">Manual</strong>.`;
+      }
+    } finally {
+      if (btnRefresh) {
+        btnRefresh.disabled = false;
+        btnRefresh.style.opacity = '1';
+      }
+    }
+  }
+
+  function setFormattedDate() {
+    const today = new Date();
+    const formatted = today.toLocaleDateString('pt-BR', {
+      weekday: 'long',
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    });
+    // Primeira letra maiúscula
+    const capitalized = formatted.charAt(0).toUpperCase() + formatted.slice(1);
+    const dateEl = document.getElementById('currentDateText');
+    if (dateEl) {
+      dateEl.textContent = capitalized;
+    }
+  }
+
+  function getVal(id) {
+    const el = document.getElementById(id);
+    if (!el) return 0;
+    const v = parseFloat(el.value);
+    return isNaN(v) ? 0 : v;
+  }
+
+  function calculateAll() {
+    const pen = Math.max(0, getVal('penAmount'));
+    const midPenBrl = Math.max(0.0001, getVal('midPenBrl'));
+    const midUsdBrl = Math.max(0.0001, getVal('midUsdBrl'));
+    const rateUsdPen = Math.max(0.0001, getVal('rateUsdPen'));
+    const feeWisePct = getVal('feeWisePct') / 100;
+    const feeRemessaPct = getVal('feeRemessaPct') / 100;
+    const iofPct = 0.0038;
+
+    // Atualiza caixa de referência mid-market
+    const totalMidMarketBrl = pen * midPenBrl;
+    const refBox = document.getElementById('midMarketRefBox');
+    if (refBox) {
+      refBox.innerHTML = `Referência Comercial PEN→BRL: <strong>${fmtBrl.format(totalMidMarketBrl)}</strong> (sem taxas/spread)`;
+    }
+
+    const routes = [];
+
+    // 1. Rota 2 etapas: Wise (PEN -> USD -> BRL)
+    // PEN ÷ taxa_compra_dólar = USD; USD × mid USD→BRL = BRL bruto; menos tarifa % e menos IOF 0,38%
+    const usdEquiv = pen / rateUsdPen;
+    const wiseGrossBrl = usdEquiv * midUsdBrl;
+    const wiseFeeBrl = wiseGrossBrl * feeWisePct;
+    const wiseIofBrl = wiseGrossBrl * iofPct;
+    const wiseNetBrl = Math.max(0, wiseGrossBrl - wiseFeeBrl - wiseIofBrl);
+
+    routes.push({
+      name: 'Wise (2 etapas)',
+      time: ROUTE_CONFIG['Wise (2 etapas)'].timeText,
+      tempoHoras: ROUTE_CONFIG['Wise (2 etapas)'].tempoHoras,
+      type: 'twostep',
+      typeLabel: 'S/ → USD → BRL via Wise',
+      notes: `S/ ${pen.toFixed(0)} ÷ ${rateUsdPen} = $${usdEquiv.toFixed(2)} USD`,
+      netBrl: wiseNetBrl
+    });
+
+    // 2. Rota 2 etapas: Remessa Online (PEN -> USD -> BRL)
+    const roGrossBrl = usdEquiv * midUsdBrl;
+    const roFeeBrl = roGrossBrl * feeRemessaPct;
+    const roIofBrl = roGrossBrl * iofPct;
+    const roNetBrl = Math.max(0, roGrossBrl - roFeeBrl - roIofBrl);
+
+    routes.push({
+      name: 'Remessa Online (2 etapas)',
+      time: ROUTE_CONFIG['Remessa Online (2 etapas)'].timeText,
+      tempoHoras: ROUTE_CONFIG['Remessa Online (2 etapas)'].tempoHoras,
+      type: 'twostep',
+      typeLabel: 'S/ → USD → BRL via Remessa Online',
+      notes: `S/ ${pen.toFixed(0)} ÷ ${rateUsdPen} = $${usdEquiv.toFixed(2)} USD`,
+      netBrl: roNetBrl
+    });
+
+    // Função para rotas diretas:
+    // PEN × taxa_efetiva = BRL bruto; menos tarifa fixa convertida em BRL (tarifa em soles × taxa_efetiva), e menos IOF 0,38%
+    function calcDirectRoute(name, rateId, feeId, sublabel) {
+      const rate = Math.max(0, getVal(rateId));
+      const feePen = Math.max(0, getVal(feeId));
+      
+      const netPen = Math.max(0, pen - feePen);
+      const grossBrl = netPen * rate;
+      const iofBrl = grossBrl * iofPct;
+      const netBrl = Math.max(0, grossBrl - iofBrl);
+
+      const cfg = ROUTE_CONFIG[name] || { timeText: '1 dia útil', tempoHoras: 24 };
+
+      return {
+        name: name,
+        time: cfg.timeText,
+        tempoHoras: cfg.tempoHoras,
+        type: 'direct',
+        typeLabel: sublabel,
+        notes: feePen > 0 ? `Tarifa fixa de S/ ${feePen.toFixed(2)} deduzida` : 'Sem tarifa fixa',
+        netBrl: netBrl
+      };
+    }
+
+    routes.push(calcDirectRoute('Global66', 'rateGlobal66', 'feeGlobal66', 'Rota direta PEN → BRL'));
+    routes.push(calcDirectRoute('Remesas.com', 'rateRemesas', 'feeRemesas', 'Rota direta PEN → Pix BRL'));
+    routes.push(calcDirectRoute('Paysend', 'ratePaysend', 'feePaysend', 'Rota direta PEN → Cartão/Conta'));
+    routes.push(calcDirectRoute('Western Union', 'rateWU', 'feeWU', 'Rota direta PEN → BRL'));
+
+    // Calcular métricas relativas
+    routes.forEach(r => {
+      // Taxa efetiva = BRL líquido recebido / PEN enviado
+      r.effectiveRate = pen > 0 ? (r.netBrl / pen) : 0;
+      // Custo total % = (mid-market PEN→BRL × valor − recebido) / (mid-market × valor) × 100
+      r.costPct = totalMidMarketBrl > 0 
+        ? ((totalMidMarketBrl - r.netBrl) / totalMidMarketBrl) * 100 
+        : 0;
+    });
+
+    // Calcular normalizações para o modo Equilibrado (escala 0 a 1: melhor = 0, pior = 1)
+    const minCost = Math.min(...routes.map(r => r.costPct));
+    const maxCost = Math.max(...routes.map(r => r.costPct));
+    const minTime = Math.min(...routes.map(r => r.tempoHoras));
+    const maxTime = Math.max(...routes.map(r => r.tempoHoras));
+
+    routes.forEach(r => {
+      const normCost = maxCost > minCost ? (r.costPct - minCost) / (maxCost - minCost) : 0;
+      const normTime = maxTime > minTime ? (r.tempoHoras - minTime) / (maxTime - minTime) : 0;
+      r.score = (0.5 * normCost) + (0.5 * normTime);
+      r.scoreFormatted = r.score.toFixed(2).replace('.', ',');
+    });
+
+    // Ordenar de acordo com a prioridade selecionada
+    if (currentPriority === 'cheapest') {
+      // Menor custo total % primeiro (em empate, maior netBrl)
+      routes.sort((a, b) => (a.costPct - b.costPct) || (b.netBrl - a.netBrl));
+    } else if (currentPriority === 'fastest') {
+      // Menor tempoHoras primeiro (em empate, menor custo)
+      routes.sort((a, b) => (a.tempoHoras - b.tempoHoras) || (a.costPct - b.costPct));
+    } else {
+      // Modo Equilibrado: menor pontuação vence (em empate, menor custo)
+      routes.sort((a, b) => (a.score - b.score) || (a.costPct - b.costPct));
+    }
+
+    const bestOption = routes[0];
+    const highestNet = Math.max(...routes.map(r => r.netBrl));
+
+    routes.forEach(r => {
+      r.diffBrl = highestNet - r.netBrl;
+    });
+
+    // Atualizar UI
+    renderWinner(bestOption);
+    renderTable(routes);
+  }
+
+  function renderWinner(best) {
+    const banner = document.getElementById('winnerBanner');
+    const title = document.getElementById('winnerTitle');
+    const desc = document.getElementById('winnerDesc');
+    const tabBadge = document.getElementById('bestResultTabBadge');
+    const summaryVal = document.getElementById('resultsSummaryVal');
+    const pen = getVal('penAmount');
+
+    if (tabBadge) {
+      tabBadge.textContent = fmtBrl.format(best.netBrl);
+    }
+
+    if (summaryVal) {
+      summaryVal.innerHTML = `Conversão de <strong>S/ ${pen.toLocaleString('pt-BR')}</strong> Soles para Reais`;
+    }
+
+    if (!banner || !title || !desc) return;
+
+    let explanation = '';
+    if (currentPriority === 'cheapest') {
+      explanation = `venceu por ter o menor custo total (${fmtPct.format(best.costPct)}%) e garantir o maior valor em reais (${fmtBrl.format(best.netBrl)}).`;
+    } else if (currentPriority === 'fastest') {
+      explanation = `venceu por ser a mais rápida (${best.time.toLowerCase()}) com chegada estimada em até ${best.tempoHoras <= 1 ? (best.tempoHoras * 60) + ' min' : best.tempoHoras + 'h'}.`;
+    } else {
+      explanation = `venceu no equilíbrio entre custo (${fmtPct.format(best.costPct)}%) e tempo (${best.time.toLowerCase()}) com a melhor nota (${best.scoreFormatted}).`;
+    }
+
+    title.textContent = `🏆 Melhor opção do dia: ${best.name} — ${fmtBrl.format(best.netBrl)}`;
+    desc.innerHTML = `<strong>${best.name}</strong> ${explanation} Câmbio comercial de referência com spread líquido calculado.`;
+  }
+
+  function renderTable(routes) {
+    const tbody = document.getElementById('resultsTableBody');
+    const thScore = document.getElementById('thColScore');
+    if (!tbody) return;
+
+    const isBalanced = (currentPriority === 'balanced');
+    if (thScore) {
+      thScore.style.display = isBalanced ? 'table-cell' : 'none';
+    }
+
+    tbody.innerHTML = '';
+
+    routes.forEach((r, idx) => {
+      const isWinner = idx === 0;
+      const tr = document.createElement('tr');
+      if (isWinner) {
+        tr.className = 'is-winner';
+      }
+
+      let costClass = 'cost-pct-low';
+      if (r.costPct > 3.0) costClass = 'cost-pct-high';
+      else if (r.costPct > 1.8) costClass = 'cost-pct-mid';
+
+      const diffDisplay = r.diffBrl <= 0.005 
+        ? '<span class="val-loss zero">Maior valor 🏆</span>' 
+        : `<span class="val-loss">-${fmtBrl.format(r.diffBrl)}</span>`;
+
+      const scoreCellHtml = isBalanced 
+        ? `<td><span class="score-badge" title="0 = melhor equilíbrio da simulação">${r.scoreFormatted}</span></td>`
+        : '';
+
+      tr.innerHTML = `
+        <td style="text-align: center;">
+          <span class="rank-pill ${idx === 0 ? 'top-1' : (idx === 1 ? 'top-2' : '')}">
+            ${idx + 1}
+          </span>
+        </td>
+        <td>
+          <div style="font-weight: 700; color: var(--text);">
+            ${escapeHtml(r.name)} ${isWinner ? '✨' : ''}
+          </div>
+          <div>
+            <span class="service-badge ${r.type === 'twostep' ? 'badge-twostep' : 'badge-direct'}">
+              ${escapeHtml(r.typeLabel)}
+            </span>
+          </div>
+          <div style="font-size: 0.72rem; color: var(--text-muted); margin-top: 0.2rem;">
+            ${escapeHtml(r.notes)}
+          </div>
+        </td>
+        <td>
+          <span class="time-badge">⏱️ ${escapeHtml(r.time)}</span>
+        </td>
+        <td>
+          <div style="font-weight: 600;">1 PEN = ${fmtNum.format(r.effectiveRate)} BRL</div>
+          <div style="font-size: 0.72rem; color: var(--text-muted);">Líquido real na conta</div>
+        </td>
+        <td>
+          <span class="val-highlight">${fmtBrl.format(r.netBrl)}</span>
+        </td>
+        <td>
+          <span class="cost-pct-pill ${costClass}">
+            ${fmtPct.format(r.costPct)}%
+          </span>
+        </td>
+        ${scoreCellHtml}
+        <td>
+          ${diffDisplay}
+        </td>
+      `;
+
+      tbody.appendChild(tr);
+    });
+  }
+
+  function resetDefaults() {
+    Object.keys(DEFAULTS).forEach(key => {
+      const el = document.getElementById(key);
+      if (el) el.value = DEFAULTS[key];
+    });
+    calculateAll();
+  }
+
+  function escapeHtml(str) {
+    if (!str) return '';
+    return str
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#039;');
+  }
+
+  // Inicialização
+  document.addEventListener('DOMContentLoaded', () => {
+    setFormattedDate();
+    setMode('auto'); // Inicia em modo Automático por padrão
+
+    // Ouvir alterações em todos os inputs para recalcular dinamicamente
+    const inputs = document.querySelectorAll('input[type="number"]');
+    inputs.forEach(input => {
+      input.addEventListener('input', calculateAll);
+      input.addEventListener('change', calculateAll);
+    });
+
+    calculateAll();
+  });
+</script>
+
+<script>
+/* Skip artifact shell — fixed helpers served beside every artifact. */
+(function () {
+  "use strict";
+
+  var fmt = {
+    num: function (v, opts) { return new Intl.NumberFormat("pt-BR", opts || {}).format(v); },
+    brl: function (v) { return new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(v); },
+    pct: function (v) { return new Intl.NumberFormat("pt-BR", { style: "percent", maximumFractionDigits: 1 }).format(v); }
+  };
+
+  // axisFmt keeps axis tick labels short (compact notation) so long values
+  // (e.g. full BRL amounts) never clip against the plot edge.
+  function axisFmt(v) {
+    return fmt.num(v, { notation: "compact", maximumFractionDigits: 1 });
+  }
+
+  // format accepts a function OR one of the fmt names ("num" | "brl" | "pct").
+  function coerceFormat(spec) {
+    if (typeof spec === "function") return spec;
+    if (typeof spec === "string" && fmt[spec]) return fmt[spec];
+    return function (v) { return fmt.num(v); };
+  }
+
+  function accent() {
+    return getComputedStyle(document.documentElement).getPropertyValue("--accent").trim() || "#2563eb";
+  }
+  function mutedColor() {
+    return getComputedStyle(document.documentElement).getPropertyValue("--text-muted").trim() || "#5b6472";
+  }
+  function svgEl(tag, attrs) {
+    var el = document.createElementNS("http://www.w3.org/2000/svg", tag);
+    for (var k in attrs) el.setAttribute(k, attrs[k]);
+    return el;
+  }
+  function frame(el, w, h) {
+    var svg = svgEl("svg", { viewBox: "0 0 " + w + " " + h, role: "img" });
+    el.innerHTML = "";
+    el.appendChild(svg);
+    return svg;
+  }
+
+  // maxOf guards the axis scale: empty values would give -Infinity (truthy,
+  // so "|| 1" can't catch it) and a non-positive max would flip the chart.
+  function maxOf(values) {
+    var m = values.length ? Math.max.apply(null, values) : 0;
+    return m > 0 ? m : 1;
+  }
+
+  // bar(el, {labels:[], values:[], color?, format?}) — vertical bar chart.
+  function bar(el, cfg) {
+    var W = 640, H = 280, padL = 46, padB = 30, padT = 12;
+    var svg = frame(el, W, H);
+    var max = maxOf(cfg.values);
+    var n = cfg.values.length;
+    var plotW = W - padL - 12, plotH = H - padT - padB;
+    var step = plotW / n, bw = Math.min(step * 0.62, 64);
+    var color = cfg.color || accent();
+    var f = coerceFormat(cfg.format);
+    for (var g = 0; g <= 4; g++) {
+      var gy = padT + plotH - (plotH * g) / 4;
+      svg.appendChild(svgEl("line", { x1: padL, y1: gy, x2: W - 12, y2: gy, stroke: "currentColor", "stroke-opacity": 0.08 }));
+      var lbl = svgEl("text", { x: padL - 8, y: gy + 4, "text-anchor": "end", "font-size": 10, fill: mutedColor() });
+      lbl.textContent = axisFmt((max * g) / 4);
+      svg.appendChild(lbl);
+    }
+    cfg.values.forEach(function (v, i) {
+      var bh = Math.max(0, (v / max) * plotH);
+      var x = padL + i * step + (step - bw) / 2;
+      var y = padT + plotH - bh;
+      var r = svgEl("rect", { x: x, y: y, width: bw, height: bh, rx: 4, fill: color });
+      var t = svgEl("title", {});
+      t.textContent = cfg.labels[i] + ": " + f(v);
+      r.appendChild(t);
+      svg.appendChild(r);
+      var tx = svgEl("text", { x: x + bw / 2, y: H - 10, "text-anchor": "middle", "font-size": 11, fill: mutedColor() });
+      tx.textContent = cfg.labels[i];
+      svg.appendChild(tx);
+    });
+  }
+
+  // line(el, {labels:[], values:[], color?, format?}) — single-series line.
+  function line(el, cfg) {
+    var W = 640, H = 280, padL = 46, padB = 30, padT = 12;
+    var svg = frame(el, W, H);
+    var max = maxOf(cfg.values);
+    var n = cfg.values.length;
+    var plotW = W - padL - 16, plotH = H - padT - padB;
+    var color = cfg.color || accent();
+    var f = coerceFormat(cfg.format);
+    for (var g = 0; g <= 4; g++) {
+      var gy = padT + plotH - (plotH * g) / 4;
+      svg.appendChild(svgEl("line", { x1: padL, y1: gy, x2: W - 16, y2: gy, stroke: "currentColor", "stroke-opacity": 0.08 }));
+      var lbl = svgEl("text", { x: padL - 8, y: gy + 4, "text-anchor": "end", "font-size": 10, fill: mutedColor() });
+      lbl.textContent = axisFmt((max * g) / 4);
+      svg.appendChild(lbl);
+    }
+    var pts = cfg.values.map(function (v, i) {
+      var x = padL + (n === 1 ? plotW / 2 : (plotW * i) / (n - 1));
+      var y = padT + plotH - (v / max) * plotH;
+      return [x, y];
+    });
+    var d = pts.map(function (p, i) { return (i ? "L" : "M") + p[0].toFixed(1) + " " + p[1].toFixed(1); }).join(" ");
+    svg.appendChild(svgEl("path", { d: d, fill: "none", stroke: color, "stroke-width": 2, "stroke-linejoin": "round" }));
+    pts.forEach(function (p, i) {
+      var c = svgEl("circle", { cx: p[0], cy: p[1], r: 3.5, fill: color });
+      var t = svgEl("title", {});
+      t.textContent = cfg.labels[i] + ": " + f(cfg.values[i]);
+      c.appendChild(t);
+      svg.appendChild(c);
+      var tx = svgEl("text", { x: p[0], y: H - 10, "text-anchor": "middle", "font-size": 11, fill: mutedColor() });
+      tx.textContent = cfg.labels[i];
+      svg.appendChild(tx);
+    });
+  }
+
+  // donut(el, {labels:[], values:[], colors?}) — donut with center total.
+  function donut(el, cfg) {
+    var W = 320, H = 280, cx = W / 2, cy = H / 2, R = 92, r = 58;
+    var svg = frame(el, W, H);
+    var total = cfg.values.reduce(function (a, b) { return a + b; }, 0) || 1;
+    var palette = cfg.colors || [accent(), "#1baf7a", "#eda100", "#e34948", "#4a3aa7", "#e87ba4"];
+    var a0 = -Math.PI / 2;
+    cfg.values.forEach(function (v, i) {
+      var a1 = a0 + (v / total) * Math.PI * 2;
+      var large = a1 - a0 > Math.PI ? 1 : 0;
+      var p = ["M", cx + R * Math.cos(a0), cy + R * Math.sin(a0),
+        "A", R, R, 0, large, 1, cx + R * Math.cos(a1), cy + R * Math.sin(a1),
+        "L", cx + r * Math.cos(a1), cy + r * Math.sin(a1),
+        "A", r, r, 0, large, 0, cx + r * Math.cos(a0), cy + r * Math.sin(a0), "Z"].join(" ");
+      var path = svgEl("path", { d: p, fill: palette[i % palette.length] });
+      var t = svgEl("title", {});
+      t.textContent = cfg.labels[i] + ": " + fmt.num(v) + " (" + fmt.pct(v / total) + ")";
+      path.appendChild(t);
+      svg.appendChild(path);
+      a0 = a1;
+    });
+    var center = svgEl("text", { x: cx, y: cy + 5, "text-anchor": "middle", "font-size": 20, "font-weight": 650, fill: "currentColor" });
+    center.textContent = fmt.num(total);
+    svg.appendChild(center);
+  }
+
+  window.skipShell = { fmt: fmt };
+  window.skipChart = { bar: bar, line: line, donut: donut };
+})();
+
+</script>
+</body>
+</html>
