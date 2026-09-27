@@ -198,80 +198,26 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
       to { opacity: 1; transform: translateY(0); }
     }
 
-    /* Mode selector (Auto vs Manual) */
-    .mode-selector-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 0.85rem 1.25rem;
-      margin-bottom: 1.25rem;
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      justify-content: space-between;
-      gap: 0.75rem;
+    .form-input.is-invalid {
+      border-color: #ef4444 !important;
+      background-color: #fef2f2 !important;
+      box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.2) !important;
     }
 
-    .mode-switch-group {
-      display: inline-flex;
-      background: var(--bg);
-      border: 1px solid var(--border);
+    .validation-alert-box {
+      background-color: #fef2f2;
+      border: 1px solid #fecaca;
       border-radius: 8px;
-      padding: 0.2rem;
-      gap: 0.2rem;
+      padding: 0.75rem 1rem;
+      margin-bottom: 1.25rem;
+      color: #991b1b;
+      font-size: 0.85rem;
+      display: none;
     }
 
-    .mode-opt-btn {
-      border: none;
-      background: transparent;
-      padding: 0.35rem 0.85rem;
-      border-radius: 6px;
-      font-size: 0.825rem;
-      font-weight: 600;
-      cursor: pointer;
-      color: var(--text-muted);
-      transition: all 0.15s ease;
-    }
-
-    .mode-opt-btn.active {
-      background: var(--accent);
-      color: var(--accent-contrast);
-    }
-
-    .sync-status {
-      font-size: 0.8rem;
-      color: var(--text-muted);
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      flex-wrap: wrap;
-    }
-
-    .sync-btn {
-      background: transparent;
-      border: 1px solid var(--border);
-      color: var(--accent-text);
-      padding: 0.25rem 0.6rem;
-      border-radius: 6px;
-      font-size: 0.775rem;
-      font-weight: 600;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      gap: 0.3rem;
-      transition: all 0.15s ease;
-    }
-
-    .sync-btn:hover {
-      background: #f0fdf4;
-      border-color: #86efac;
-    }
-
-    .form-input.is-auto {
-      background-color: #f1f5f9;
-      color: #334155;
-      cursor: not-allowed;
-      border-style: dashed;
+    .validation-alert-box ul {
+      margin: 0.4rem 0 0 1.2rem;
+      padding: 0;
     }
 
     .time-badge {
@@ -828,26 +774,10 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
 
   <!-- ================= TAB 1: COTAÇÕES ================= -->
   <section class="tab-pane active" id="paneQuotes" role="tabpanel" aria-labelledby="tabBtnQuotes">
-    <!-- MODO AUTOMÁTICO VS MANUAL -->
-    <div class="mode-selector-card">
-      <div style="display:flex; align-items:center; gap:0.65rem; flex-wrap:wrap;">
-        <span style="font-size:0.875rem; font-weight:700; color:var(--text);">Cotações de referência:</span>
-        <div class="mode-switch-group" role="radiogroup" aria-label="Modo de cotação">
-          <button type="button" class="mode-opt-btn active" id="btnModeAuto" onclick="setMode('auto')">
-            ⚡ Automático (API)
-          </button>
-          <button type="button" class="mode-opt-btn" id="btnModeManual" onclick="setMode('manual')">
-            ✏️ Manual
-          </button>
-        </div>
-      </div>
-
-      <div class="sync-status">
-        <span id="syncStatusText">Buscando cotações automáticas...</span>
-        <button type="button" class="sync-btn" id="btnRefreshRates" onclick="fetchExchangeRates(true)" title="Recarregar cotações de PEN/BRL e USD/BRL">
-          🔄 Atualizar cotações
-        </button>
-      </div>
+    <!-- VALIDAÇÃO VISÍVEL / ALERTA GERAL -->
+    <div id="validationAlert" class="validation-alert-box" role="alert">
+      <strong>⚠️ Verifique os campos destacados abaixo:</strong>
+      <ul id="validationAlertList"></ul>
     </div>
 
     <!-- VALOR A CONVERTER -->
@@ -858,7 +788,7 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
         </label>
         <div class="amount-input-group">
           <span class="currency-tag">S/</span>
-          <input type="number" id="penAmount" class="amount-input" value="1000" min="10" step="50">
+          <input type="text" inputmode="decimal" id="penAmount" class="amount-input" value="1.000">
         </div>
       </div>
       <div class="ref-val-badge" id="midMarketRefBox">
@@ -866,10 +796,10 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
       </div>
     </div>
 
-    <!-- AVISO SOBRE TAXAS LOCAIS -->
-    <div style="background:#fffbeb; border:1px solid #fde68a; border-radius:8px; padding:0.65rem 0.9rem; font-size:0.8rem; color:#92400e; margin-bottom:1.25rem; display:flex; align-items:center; gap:0.5rem;">
-      <span>💡</span>
-      <span><strong>Nota:</strong> Taxas de casas de câmbio peruanas e apps precisam ser conferidas manualmente nos links indicados — elas mudam ao longo do dia.</span>
+    <!-- NOTA DE ORIENTAÇÃO -->
+    <div style="background:#fffbeb; border:1px solid #fde68a; border-radius:8px; padding:0.75rem 0.95rem; font-size:0.825rem; color:#92400e; margin-bottom:1.25rem; display:flex; align-items:flex-start; gap:0.55rem; line-height:1.45;">
+      <span style="font-size:1.05rem; line-height:1;">ℹ️</span>
+      <span>Preencha as cotações do dia manualmente consultando os links de cada serviço. As taxas mudam ao longo do dia — confira pouco antes de fechar a operação.</span>
     </div>
 
   <!-- SEÇÕES DE COTAÇÕES -->
@@ -883,7 +813,7 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
         
         <div class="field-row">
           <div class="field-header">
-            <label class="field-label" for="midPenBrl">Câmbio comercial PEN → BRL</label>
+            <label class="field-label" for="midPenBrl">Câmbio comercial PEN → BRL (mid-market)</label>
             <div class="ext-links">
               <a href="https://wise.com/br/currency-converter/pen-to-brl-rate" target="_blank" rel="noopener noreferrer" class="ext-link" title="Consultar câmbio oficial no Wise">
                 ↗ ver no Wise
@@ -892,14 +822,14 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
           </div>
           <div class="input-flex-row">
             <span style="font-size:0.85rem; color:var(--text-muted);">1 PEN =</span>
-            <input type="number" step="0.0001" id="midPenBrl" class="form-input" value="1.52">
+            <input type="text" inputmode="decimal" id="midPenBrl" class="form-input" value="1,52">
             <span style="font-size:0.85rem; color:var(--text-muted);">BRL</span>
           </div>
         </div>
 
         <div class="field-row">
           <div class="field-header">
-            <label class="field-label" for="midUsdBrl">Câmbio comercial USD → BRL</label>
+            <label class="field-label" for="midUsdBrl">Câmbio comercial USD → BRL (mid-market)</label>
             <div class="ext-links">
               <a href="https://wise.com/br/currency-converter/usd-to-brl-rate" target="_blank" rel="noopener noreferrer" class="ext-link" title="Consultar USD/BRL no Wise">
                 ↗ ver no Wise
@@ -908,7 +838,7 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
           </div>
           <div class="input-flex-row">
             <span style="font-size:0.85rem; color:var(--text-muted);">1 USD =</span>
-            <input type="number" step="0.0001" id="midUsdBrl" class="form-input" value="5.10">
+            <input type="text" inputmode="decimal" id="midUsdBrl" class="form-input" value="5,10">
             <span style="font-size:0.85rem; color:var(--text-muted);">BRL</span>
           </div>
         </div>
@@ -934,10 +864,10 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
           </div>
           <div class="input-flex-row">
             <span style="font-size:0.85rem; color:var(--text-muted);">S/ por US$:</span>
-            <input type="number" step="0.0001" id="rateUsdPen" class="form-input" value="3.34">
+            <input type="text" inputmode="decimal" id="rateUsdPen" class="form-input" value="3,7500">
           </div>
           <div class="field-note">
-            💡 Use a cotação de <strong>COMPRA</strong> da casa online (a casa compra seus soles e vende USD).
+            💡 Use a cotação de <strong>COMPRA</strong> da casa online (a casa compra seus soles e vende USD). Esperado entre 3,0 e 4,5.
           </div>
         </div>
 
@@ -949,7 +879,7 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
             </div>
           </div>
           <div class="input-flex-row">
-            <input type="number" step="0.01" id="feeWisePct" class="form-input" value="0.60">
+            <input type="text" inputmode="decimal" id="feeWisePct" class="form-input" value="0,60">
             <span style="font-size:0.85rem; color:var(--text-muted);">%</span>
           </div>
         </div>
@@ -962,7 +892,7 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
             </div>
           </div>
           <div class="input-flex-row">
-            <input type="number" step="0.01" id="feeRemessaPct" class="form-input" value="1.00">
+            <input type="text" inputmode="decimal" id="feeRemessaPct" class="form-input" value="1,00">
             <span style="font-size:0.85rem; color:var(--text-muted);">%</span>
           </div>
         </div>
@@ -981,7 +911,7 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
           <span>⚡</span> Rotas diretas (Soles → Reais)
         </h2>
         <div class="field-note" style="margin-top:-0.5rem; margin-bottom:0.85rem;">
-          Envio direto de PEN para conta Pix ou bancária no Brasil.
+          Envio direto de PEN para conta Pix ou bancária no Brasil (taxas plausíveis entre 1,0 e 2,0).
         </div>
 
         <!-- Global66 -->
@@ -995,11 +925,11 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
           <div class="input-flex-row">
             <div class="input-subfield">
               <span class="sub-label">Câmbio (BRL por PEN)</span>
-              <input type="number" step="0.0001" id="rateGlobal66" class="form-input" value="1.4855">
+              <input type="text" inputmode="decimal" id="rateGlobal66" class="form-input" value="1,4855">
             </div>
             <div class="input-subfield">
               <span class="sub-label">Tarifa fixa (S/)</span>
-              <input type="number" step="0.1" id="feeGlobal66" class="form-input" value="30.00">
+              <input type="text" inputmode="decimal" id="feeGlobal66" class="form-input" value="30,00">
             </div>
           </div>
           <div class="field-note">Tarifa ~S/ 30 a cada S/ 1.000 (primeiro envio costuma ser grátis).</div>
@@ -1016,11 +946,11 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
           <div class="input-flex-row">
             <div class="input-subfield">
               <span class="sub-label">Câmbio (BRL por PEN)</span>
-              <input type="number" step="0.0001" id="rateRemesas" class="form-input" value="1.4960">
+              <input type="text" inputmode="decimal" id="rateRemesas" class="form-input" value="1,4960">
             </div>
             <div class="input-subfield">
               <span class="sub-label">Tarifa fixa (S/)</span>
-              <input type="number" step="0.1" id="feeRemesas" class="form-input" value="0.00">
+              <input type="text" inputmode="decimal" id="feeRemesas" class="form-input" value="0,00">
             </div>
           </div>
           <div class="field-note">Empresa registrada na SBS do Peru; recebe via Pix diretamente.</div>
@@ -1037,11 +967,11 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
           <div class="input-flex-row">
             <div class="input-subfield">
               <span class="sub-label">Câmbio (BRL por PEN)</span>
-              <input type="number" step="0.0001" id="ratePaysend" class="form-input" value="1.4545">
+              <input type="text" inputmode="decimal" id="ratePaysend" class="form-input" value="1,4545">
             </div>
             <div class="input-subfield">
               <span class="sub-label">Tarifa fixa (S/)</span>
-              <input type="number" step="0.1" id="feePaysend" class="form-input" value="5.00">
+              <input type="text" inputmode="decimal" id="feePaysend" class="form-input" value="5,00">
             </div>
           </div>
           <div class="field-note">Tarifa fixa baixa (~S/ 5), porém spread cambial embutido maior.</div>
@@ -1058,11 +988,11 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
           <div class="input-flex-row">
             <div class="input-subfield">
               <span class="sub-label">Câmbio (BRL por PEN)</span>
-              <input type="number" step="0.0001" id="rateWU" class="form-input" value="1.4245">
+              <input type="text" inputmode="decimal" id="rateWU" class="form-input" value="1,4245">
             </div>
             <div class="input-subfield">
               <span class="sub-label">Tarifa fixa (S/)</span>
-              <input type="number" step="0.1" id="feeWU" class="form-input" value="49.90">
+              <input type="text" inputmode="decimal" id="feeWU" class="form-input" value="49,90">
             </div>
           </div>
           <div class="field-note">Rede capilar física e app, custo total costuma passar de 4,5%.</div>
@@ -1185,26 +1115,149 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
   };
 
   // Estado da aplicação
-  let currentMode = 'auto'; // 'auto' | 'manual'
   let activeTab = 'quotes';  // 'quotes' | 'results'
   let currentPriority = 'balanced'; // 'cheapest' | 'fastest' | 'balanced'
 
-  // Valores padrão
+  // Valores padrão (formatados em pt-BR com vírgula decimal)
   const DEFAULTS = {
-    penAmount: 1000,
-    midPenBrl: 1.52,
-    midUsdBrl: 5.10,
-    rateUsdPen: 3.34,
-    feeWisePct: 0.60,
-    feeRemessaPct: 1.00,
-    rateGlobal66: 1.4855,
-    feeGlobal66: 30.00,
-    rateRemesas: 1.4960,
-    feeRemesas: 0.00,
-    ratePaysend: 1.4545,
-    feePaysend: 5.00,
-    rateWU: 1.4245,
-    feeWU: 49.90
+    penAmount: '1.000',
+    midPenBrl: '1,52',
+    midUsdBrl: '5,10',
+    rateUsdPen: '3,7500',
+    feeWisePct: '0,60',
+    feeRemessaPct: '1,00',
+    rateGlobal66: '1,4855',
+    feeGlobal66: '30,00',
+    rateRemesas: '1,4960',
+    feeRemesas: '0,00',
+    ratePaysend: '1,4545',
+    feePaysend: '5,00',
+    rateWU: '1,4245',
+    feeWU: '49,90'
+  };
+
+  /**
+   * Parser numérico robusto para formatos pt-BR e internacionais.
+   * Regras:
+   * - Se contém vírgula E ponto: o último separador que aparece é o decimal ("1.527,18" -> 1527.18; "1,5240" -> 1.524; "5.1919" -> 5.1919).
+   * - Se contém só vírgula: vírgula é decimal ("1,52" -> 1.52).
+   * - Se contém só ponto:
+   *     Para campos de TAXA (isRate=true), ponto é sempre decimal ("5.1919" -> 5.1919).
+   *     Para quantia (isRate=false), se tiver exatamente 3 dígitos após o ponto ("1.000"), trata como milhar -> 1000.
+   */
+  function parseNumeroBR(valor, isRate = false) {
+    if (typeof valor === 'number') {
+      return isNaN(valor) ? 0 : valor;
+    }
+    if (valor === null || valor === undefined) return 0;
+    let str = String(valor).trim();
+    if (!str) return 0;
+
+    // Remover caracteres não numéricos exceto vírgula, ponto e sinal negativo
+    str = str.replace(/[^\d.,-]/g, '');
+    if (!str) return 0;
+
+    const hasComma = str.includes(',');
+    const hasDot = str.includes('.');
+
+    if (hasComma && hasDot) {
+      const lastComma = str.lastIndexOf(',');
+      const lastDot = str.lastIndexOf('.');
+      if (lastComma > lastDot) {
+        // Ex: "1.527,18" -> ponto é milhar, vírgula é decimal
+        str = str.replace(/\./g, '').replace(',', '.');
+      } else {
+        // Ex: "1,527.18" -> vírgula é milhar, ponto é decimal
+        str = str.replace(/,/g, '');
+      }
+    } else if (hasComma) {
+      // Ex: "1,5240" -> vírgula é decimal
+      str = str.replace(',', '.');
+    } else if (hasDot) {
+      // Apenas ponto presente
+      if (!isRate && /^\d{1,3}\.\d{3}$/.test(str)) {
+        // Ex: "1.000" para quantia/valor -> 1000
+        str = str.replace('.', '');
+      } else {
+        // Ex: "5.1919" ou "1.524" -> ponto é decimal
+      }
+    }
+
+    const num = parseFloat(str);
+    return isNaN(num) ? 0 : num;
+  }
+
+  // Formata número com vírgula decimal pt-BR
+  function formatPtBrInput(num, decimals = 4) {
+    if (typeof num !== 'number' || isNaN(num)) return '';
+    return num.toFixed(decimals).replace('.', ',');
+  }
+
+  // Definição das regras de validação por campo
+  const FIELD_VALIDATIONS = {
+    midPenBrl: {
+      name: 'PEN → BRL mid-market',
+      min: 1.0,
+      max: 2.5,
+      isRate: true,
+      routesAffected: ['Wise (2 etapas)', 'Remessa Online (2 etapas)', 'Global66', 'Remesas.com', 'Paysend', 'Western Union']
+    },
+    midUsdBrl: {
+      name: 'USD → BRL mid-market',
+      min: 3.5,
+      max: 7.0,
+      isRate: true,
+      routesAffected: ['Wise (2 etapas)', 'Remessa Online (2 etapas)']
+    },
+    rateUsdPen: {
+      name: 'Taxa de compra do dólar no Peru (soles por dólar)',
+      min: 3.0,
+      max: 4.5,
+      isRate: true,
+      routesAffected: ['Wise (2 etapas)', 'Remessa Online (2 etapas)']
+    },
+    feeWisePct: {
+      name: 'Tarifa Wise (%)',
+      min: 0,
+      max: 10,
+      isRate: false,
+      routesAffected: ['Wise (2 etapas)']
+    },
+    feeRemessaPct: {
+      name: 'Tarifa Remessa Online (%)',
+      min: 0,
+      max: 10,
+      isRate: false,
+      routesAffected: ['Remessa Online (2 etapas)']
+    },
+    rateGlobal66: {
+      name: 'Taxa direta Global66',
+      min: 1.0,
+      max: 2.0,
+      isRate: true,
+      routesAffected: ['Global66']
+    },
+    rateRemesas: {
+      name: 'Taxa direta Remesas.com',
+      min: 1.0,
+      max: 2.0,
+      isRate: true,
+      routesAffected: ['Remesas.com']
+    },
+    ratePaysend: {
+      name: 'Taxa direta Paysend',
+      min: 1.0,
+      max: 2.0,
+      isRate: true,
+      routesAffected: ['Paysend']
+    },
+    rateWU: {
+      name: 'Taxa direta Western Union',
+      min: 1.0,
+      max: 2.0,
+      isRate: true,
+      routesAffected: ['Western Union']
+    }
   };
 
   // Controle de Abas
@@ -1265,113 +1318,6 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
     calculateAll();
   }
 
-  // Controle do Modo Automático / Manual
-  function setMode(mode) {
-    currentMode = mode;
-    const btnAuto = document.getElementById('btnModeAuto');
-    const btnManual = document.getElementById('btnModeManual');
-    const inputPenBrl = document.getElementById('midPenBrl');
-    const inputUsdBrl = document.getElementById('midUsdBrl');
-    const btnRefresh = document.getElementById('btnRefreshRates');
-
-    if (mode === 'auto') {
-      btnAuto.classList.add('active');
-      btnManual.classList.remove('active');
-      inputPenBrl.readOnly = true;
-      inputUsdBrl.readOnly = true;
-      inputPenBrl.classList.add('is-auto');
-      inputUsdBrl.classList.add('is-auto');
-      inputPenBrl.title = 'Preenchido automaticamente pela API comercial';
-      inputUsdBrl.title = 'Preenchido automaticamente pela API comercial';
-      btnRefresh.style.display = 'inline-flex';
-      fetchExchangeRates();
-    } else {
-      btnManual.classList.add('active');
-      btnAuto.classList.remove('active');
-      inputPenBrl.readOnly = false;
-      inputUsdBrl.readOnly = false;
-      inputPenBrl.classList.remove('is-auto');
-      inputUsdBrl.classList.remove('is-auto');
-      inputPenBrl.title = '';
-      inputUsdBrl.title = '';
-      btnRefresh.style.display = 'none';
-      const statusEl = document.getElementById('syncStatusText');
-      if (statusEl) {
-        statusEl.innerHTML = '✏️ <em>Modo manual ativo (digite as cotações desejadas)</em>';
-      }
-    }
-  }
-
-  // Busca de cotações automáticas via API pública sem chave
-  async function fetchExchangeRates(isUserClick = false) {
-    if (currentMode !== 'auto') return;
-
-    const statusEl = document.getElementById('syncStatusText');
-    const btnRefresh = document.getElementById('btnRefreshRates');
-    if (statusEl) {
-      statusEl.textContent = '⏳ Buscando cotações da API...';
-    }
-    if (btnRefresh) {
-      btnRefresh.disabled = true;
-      btnRefresh.style.opacity = '0.6';
-    }
-
-    try {
-      // Buscar PEN -> BRL e USD -> BRL em paralelo
-      const [resPen, resUsd] = await Promise.all([
-        fetch('https://open.er-api.com/v6/latest/PEN'),
-        fetch('https://open.er-api.com/v6/latest/USD')
-      ]);
-
-      if (!resPen.ok || !resUsd.ok) {
-        throw new Error('Falha na resposta HTTP da API de câmbio');
-      }
-
-      const dataPen = await resPen.json();
-      const dataUsd = await resUsd.json();
-
-      const penBrl = dataPen && dataPen.rates ? dataPen.rates.BRL : null;
-      const usdBrl = dataUsd && dataUsd.rates ? dataUsd.rates.BRL : null;
-
-      if (!penBrl || !usdBrl) {
-        throw new Error('Taxas BRL não encontradas na resposta');
-      }
-
-      const inputPenBrl = document.getElementById('midPenBrl');
-      const inputUsdBrl = document.getElementById('midUsdBrl');
-
-      if (inputPenBrl) inputPenBrl.value = parseFloat(penBrl).toFixed(4);
-      if (inputUsdBrl) inputUsdBrl.value = parseFloat(usdBrl).toFixed(4);
-
-      // Formatar data/hora retornada pela API
-      let dateText = '';
-      if (dataPen.time_last_update_utc) {
-        try {
-          const apiDate = new Date(dataPen.time_last_update_utc);
-          dateText = apiDate.toLocaleString('pt-BR', { dateStyle: 'short', timeStyle: 'short' });
-        } catch {
-          dateText = dataPen.time_last_update_utc.slice(0, 16);
-        }
-      }
-
-      if (statusEl) {
-        statusEl.innerHTML = `✅ Cotações atualizadas automaticamente ${dateText ? `(${dateText})` : ''}`;
-      }
-
-      calculateAll();
-    } catch (err) {
-      console.warn('Erro ao obter cotações automáticas:', err);
-      if (statusEl) {
-        statusEl.innerHTML = `⚠️ Falha ao buscar cotações online. Mantendo valores atuais — você pode mudar para <strong style="cursor:pointer; text-decoration:underline;" onclick="setMode('manual')">Manual</strong>.`;
-      }
-    } finally {
-      if (btnRefresh) {
-        btnRefresh.disabled = false;
-        btnRefresh.style.opacity = '1';
-      }
-    }
-  }
-
   function setFormattedDate() {
     const today = new Date();
     const formatted = today.toLocaleDateString('pt-BR', {
@@ -1380,7 +1326,6 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
       month: 'long',
       day: 'numeric'
     });
-    // Primeira letra maiúscula
     const capitalized = formatted.charAt(0).toUpperCase() + formatted.slice(1);
     const dateEl = document.getElementById('currentDateText');
     if (dateEl) {
@@ -1388,70 +1333,120 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
     }
   }
 
-  function getVal(id) {
+  function getFieldValue(id, isRate = false) {
     const el = document.getElementById(id);
     if (!el) return 0;
-    const v = parseFloat(el.value);
-    return isNaN(v) ? 0 : v;
+    return parseNumeroBR(el.value, isRate);
   }
 
   function calculateAll() {
-    const pen = Math.max(0, getVal('penAmount'));
-    const midPenBrl = Math.max(0.0001, getVal('midPenBrl'));
-    const midUsdBrl = Math.max(0.0001, getVal('midUsdBrl'));
-    const rateUsdPen = Math.max(0.0001, getVal('rateUsdPen'));
-    const feeWisePct = getVal('feeWisePct') / 100;
-    const feeRemessaPct = getVal('feeRemessaPct') / 100;
+    const pen = Math.max(0, getFieldValue('penAmount', false));
+    const midPenBrl = getFieldValue('midPenBrl', true);
+    const midUsdBrl = getFieldValue('midUsdBrl', true);
+    const rateUsdPen = getFieldValue('rateUsdPen', true);
+    const feeWisePct = getFieldValue('feeWisePct', false);
+    const feeRemessaPct = getFieldValue('feeRemessaPct', false);
     const iofPct = 0.0038;
+
+    // ==========================================
+    // VALIDAÇÃO VISÍVEL DOS CAMPOS
+    // ==========================================
+    const validationErrors = [];
+    const invalidFields = new Set();
+    const excludedRoutes = new Set();
+
+    Object.keys(FIELD_VALIDATIONS).forEach(fieldId => {
+      const rule = FIELD_VALIDATIONS[fieldId];
+      const val = getFieldValue(fieldId, rule.isRate);
+      const inputEl = document.getElementById(fieldId);
+
+      if (val < rule.min || val > rule.max || isNaN(val)) {
+        invalidFields.add(fieldId);
+        if (inputEl) inputEl.classList.add('is-invalid');
+        const minStr = rule.min.toString().replace('.', ',');
+        const maxStr = rule.max.toString().replace('.', ',');
+        validationErrors.push(`⚠️ Verifique o campo <strong>${rule.name}</strong> — valor fora da faixa esperada (${minStr} a ${maxStr}).`);
+        if (rule.routesAffected) {
+          rule.routesAffected.forEach(r => excludedRoutes.add(r));
+        }
+      } else {
+        if (inputEl) inputEl.classList.remove('is-invalid');
+      }
+    });
+
+    // Validar também penAmount
+    const penInput = document.getElementById('penAmount');
+    if (pen <= 0) {
+      invalidFields.add('penAmount');
+      if (penInput) penInput.classList.add('is-invalid');
+      validationErrors.push('⚠️ Verifique o campo <strong>Valor a converter</strong> — digite um valor maior que zero.');
+    } else {
+      if (penInput) penInput.classList.remove('is-invalid');
+    }
+
+    // Exibir/ocultar caixa de alertas de validação
+    const alertBox = document.getElementById('validationAlert');
+    const alertList = document.getElementById('validationAlertList');
+    if (alertBox && alertList) {
+      if (validationErrors.length > 0) {
+        alertList.innerHTML = validationErrors.map(msg => `<li>${msg}</li>`).join('');
+        alertBox.style.display = 'block';
+      } else {
+        alertBox.style.display = 'none';
+        alertList.innerHTML = '';
+      }
+    }
 
     // Atualiza caixa de referência mid-market
     const totalMidMarketBrl = pen * midPenBrl;
     const refBox = document.getElementById('midMarketRefBox');
     if (refBox) {
-      refBox.innerHTML = `Referência Comercial PEN→BRL: <strong>${fmtBrl.format(totalMidMarketBrl)}</strong> (sem taxas/spread)`;
+      refBox.innerHTML = `Referência Mid-market PEN→BRL: <strong>${fmtBrl.format(totalMidMarketBrl)}</strong> (sem taxas/spread)`;
     }
 
     const routes = [];
 
     // 1. Rota 2 etapas: Wise (PEN -> USD -> BRL)
-    // PEN ÷ taxa_compra_dólar = USD; USD × mid USD→BRL = BRL bruto; menos tarifa % e menos IOF 0,38%
-    const usdEquiv = pen / rateUsdPen;
-    const wiseGrossBrl = usdEquiv * midUsdBrl;
-    const wiseFeeBrl = wiseGrossBrl * feeWisePct;
-    const wiseIofBrl = wiseGrossBrl * iofPct;
-    const wiseNetBrl = Math.max(0, wiseGrossBrl - wiseFeeBrl - wiseIofBrl);
+    if (rateUsdPen > 0 && midUsdBrl > 0) {
+      const usdEquiv = pen / rateUsdPen;
+      const wiseGrossBrl = usdEquiv * midUsdBrl;
+      const wiseFeeBrl = wiseGrossBrl * (feeWisePct / 100);
+      const wiseIofBrl = wiseGrossBrl * iofPct;
+      const wiseNetBrl = Math.max(0, wiseGrossBrl - wiseFeeBrl - wiseIofBrl);
 
-    routes.push({
-      name: 'Wise (2 etapas)',
-      time: ROUTE_CONFIG['Wise (2 etapas)'].timeText,
-      tempoHoras: ROUTE_CONFIG['Wise (2 etapas)'].tempoHoras,
-      type: 'twostep',
-      typeLabel: 'S/ → USD → BRL via Wise',
-      notes: `S/ ${pen.toFixed(0)} ÷ ${rateUsdPen} = $${usdEquiv.toFixed(2)} USD`,
-      netBrl: wiseNetBrl
-    });
+      routes.push({
+        name: 'Wise (2 etapas)',
+        time: ROUTE_CONFIG['Wise (2 etapas)'].timeText,
+        tempoHoras: ROUTE_CONFIG['Wise (2 etapas)'].tempoHoras,
+        type: 'twostep',
+        typeLabel: 'S/ → USD → BRL via Wise',
+        notes: `S/ ${pen.toLocaleString('pt-BR')} ÷ ${rateUsdPen.toString().replace('.', ',')} = $${usdEquiv.toFixed(2)} USD`,
+        netBrl: wiseNetBrl,
+        isInvalid: excludedRoutes.has('Wise (2 etapas)')
+      });
 
-    // 2. Rota 2 etapas: Remessa Online (PEN -> USD -> BRL)
-    const roGrossBrl = usdEquiv * midUsdBrl;
-    const roFeeBrl = roGrossBrl * feeRemessaPct;
-    const roIofBrl = roGrossBrl * iofPct;
-    const roNetBrl = Math.max(0, roGrossBrl - roFeeBrl - roIofBrl);
+      // 2. Rota 2 etapas: Remessa Online (PEN -> USD -> BRL)
+      const roGrossBrl = usdEquiv * midUsdBrl;
+      const roFeeBrl = roGrossBrl * (feeRemessaPct / 100);
+      const roIofBrl = roGrossBrl * iofPct;
+      const roNetBrl = Math.max(0, roGrossBrl - roFeeBrl - roIofBrl);
 
-    routes.push({
-      name: 'Remessa Online (2 etapas)',
-      time: ROUTE_CONFIG['Remessa Online (2 etapas)'].timeText,
-      tempoHoras: ROUTE_CONFIG['Remessa Online (2 etapas)'].tempoHoras,
-      type: 'twostep',
-      typeLabel: 'S/ → USD → BRL via Remessa Online',
-      notes: `S/ ${pen.toFixed(0)} ÷ ${rateUsdPen} = $${usdEquiv.toFixed(2)} USD`,
-      netBrl: roNetBrl
-    });
+      routes.push({
+        name: 'Remessa Online (2 etapas)',
+        time: ROUTE_CONFIG['Remessa Online (2 etapas)'].timeText,
+        tempoHoras: ROUTE_CONFIG['Remessa Online (2 etapas)'].tempoHoras,
+        type: 'twostep',
+        typeLabel: 'S/ → USD → BRL via Remessa Online',
+        notes: `S/ ${pen.toLocaleString('pt-BR')} ÷ ${rateUsdPen.toString().replace('.', ',')} = $${usdEquiv.toFixed(2)} USD`,
+        netBrl: roNetBrl,
+        isInvalid: excludedRoutes.has('Remessa Online (2 etapas)')
+      });
+    }
 
     // Função para rotas diretas:
-    // PEN × taxa_efetiva = BRL bruto; menos tarifa fixa convertida em BRL (tarifa em soles × taxa_efetiva), e menos IOF 0,38%
     function calcDirectRoute(name, rateId, feeId, sublabel) {
-      const rate = Math.max(0, getVal(rateId));
-      const feePen = Math.max(0, getVal(feeId));
+      const rate = getFieldValue(rateId, true);
+      const feePen = getFieldValue(feeId, false);
       
       const netPen = Math.max(0, pen - feePen);
       const grossBrl = netPen * rate;
@@ -1466,8 +1461,9 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
         tempoHoras: cfg.tempoHoras,
         type: 'direct',
         typeLabel: sublabel,
-        notes: feePen > 0 ? `Tarifa fixa de S/ ${feePen.toFixed(2)} deduzida` : 'Sem tarifa fixa',
-        netBrl: netBrl
+        notes: feePen > 0 ? `Tarifa fixa de S/ ${feePen.toFixed(2).replace('.', ',')} deduzida` : 'Sem tarifa fixa',
+        netBrl: netBrl,
+        isInvalid: excludedRoutes.has(name)
       };
     }
 
@@ -1476,51 +1472,59 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
     routes.push(calcDirectRoute('Paysend', 'ratePaysend', 'feePaysend', 'Rota direta PEN → Cartão/Conta'));
     routes.push(calcDirectRoute('Western Union', 'rateWU', 'feeWU', 'Rota direta PEN → BRL'));
 
-    // Calcular métricas relativas
+    // Calcular métricas relativas para rotas
     routes.forEach(r => {
-      // Taxa efetiva = BRL líquido recebido / PEN enviado
       r.effectiveRate = pen > 0 ? (r.netBrl / pen) : 0;
-      // Custo total % = (mid-market PEN→BRL × valor − recebido) / (mid-market × valor) × 100
       r.costPct = totalMidMarketBrl > 0 
         ? ((totalMidMarketBrl - r.netBrl) / totalMidMarketBrl) * 100 
         : 0;
     });
 
-    // Calcular normalizações para o modo Equilibrado (escala 0 a 1: melhor = 0, pior = 1)
-    const minCost = Math.min(...routes.map(r => r.costPct));
-    const maxCost = Math.max(...routes.map(r => r.costPct));
-    const minTime = Math.min(...routes.map(r => r.tempoHoras));
-    const maxTime = Math.max(...routes.map(r => r.tempoHoras));
+    // Separar rotas válidas para o ranking
+    const validRoutes = routes.filter(r => !r.isInvalid);
 
-    routes.forEach(r => {
-      const normCost = maxCost > minCost ? (r.costPct - minCost) / (maxCost - minCost) : 0;
-      const normTime = maxTime > minTime ? (r.tempoHoras - minTime) / (maxTime - minTime) : 0;
-      r.score = (0.5 * normCost) + (0.5 * normTime);
-      r.scoreFormatted = r.score.toFixed(2).replace('.', ',');
-    });
+    if (validRoutes.length > 0) {
+      const minCost = Math.min(...validRoutes.map(r => r.costPct));
+      const maxCost = Math.max(...validRoutes.map(r => r.costPct));
+      const minTime = Math.min(...validRoutes.map(r => r.tempoHoras));
+      const maxTime = Math.max(...validRoutes.map(r => r.tempoHoras));
 
-    // Ordenar de acordo com a prioridade selecionada
-    if (currentPriority === 'cheapest') {
-      // Menor custo total % primeiro (em empate, maior netBrl)
-      routes.sort((a, b) => (a.costPct - b.costPct) || (b.netBrl - a.netBrl));
-    } else if (currentPriority === 'fastest') {
-      // Menor tempoHoras primeiro (em empate, menor custo)
-      routes.sort((a, b) => (a.tempoHoras - b.tempoHoras) || (a.costPct - b.costPct));
+      validRoutes.forEach(r => {
+        const normCost = maxCost > minCost ? (r.costPct - minCost) / (maxCost - minCost) : 0;
+        const normTime = maxTime > minTime ? (r.tempoHoras - minTime) / (maxTime - minTime) : 0;
+        r.score = (0.5 * normCost) + (0.5 * normTime);
+        r.scoreFormatted = r.score.toFixed(2).replace('.', ',');
+      });
+
+      // Ordenar válidas de acordo com a prioridade selecionada
+      if (currentPriority === 'cheapest') {
+        validRoutes.sort((a, b) => (a.costPct - b.costPct) || (b.netBrl - a.netBrl));
+      } else if (currentPriority === 'fastest') {
+        validRoutes.sort((a, b) => (a.tempoHoras - b.tempoHoras) || (a.costPct - b.costPct));
+      } else {
+        validRoutes.sort((a, b) => (a.score - b.score) || (a.costPct - b.costPct));
+      }
+
+      const bestOption = validRoutes[0];
+      const highestNet = Math.max(...validRoutes.map(r => r.netBrl));
+
+      validRoutes.forEach(r => {
+        r.diffBrl = highestNet - r.netBrl;
+      });
+
+      // As rotas inválidas ficam no final da tabela com alerta
+      const invalidRoutesList = routes.filter(r => r.isInvalid);
+      invalidRoutesList.forEach(r => {
+        r.scoreFormatted = '—';
+        r.diffBrl = highestNet - r.netBrl;
+      });
+
+      renderWinner(bestOption);
+      renderTable([...validRoutes, ...invalidRoutesList]);
     } else {
-      // Modo Equilibrado: menor pontuação vence (em empate, menor custo)
-      routes.sort((a, b) => (a.score - b.score) || (a.costPct - b.costPct));
+      renderWinner(null);
+      renderTable(routes);
     }
-
-    const bestOption = routes[0];
-    const highestNet = Math.max(...routes.map(r => r.netBrl));
-
-    routes.forEach(r => {
-      r.diffBrl = highestNet - r.netBrl;
-    });
-
-    // Atualizar UI
-    renderWinner(bestOption);
-    renderTable(routes);
   }
 
   function renderWinner(best) {
@@ -1529,7 +1533,14 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
     const desc = document.getElementById('winnerDesc');
     const tabBadge = document.getElementById('bestResultTabBadge');
     const summaryVal = document.getElementById('resultsSummaryVal');
-    const pen = getVal('penAmount');
+    const pen = getFieldValue('penAmount', false);
+
+    if (!best) {
+      if (tabBadge) tabBadge.textContent = 'Ajustar cotações';
+      if (title) title.textContent = '⚠️ Nenhuma rota válida no momento';
+      if (desc) desc.textContent = 'Corrija os campos destacados em vermelho suave na aba Cotações para visualizar o ranking.';
+      return;
+    }
 
     if (tabBadge) {
       tabBadge.textContent = fmtBrl.format(best.netBrl);
@@ -1566,34 +1577,49 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
 
     tbody.innerHTML = '';
 
-    routes.forEach((r, idx) => {
-      const isWinner = idx === 0;
+    let rankCounter = 0;
+
+    routes.forEach((r) => {
+      const isInvalid = !!r.isInvalid;
+      if (!isInvalid) rankCounter++;
+      const isWinner = rankCounter === 1 && !isInvalid;
+
       const tr = document.createElement('tr');
       if (isWinner) {
         tr.className = 'is-winner';
+      } else if (isInvalid) {
+        tr.style.opacity = '0.65';
+        tr.style.backgroundColor = '#fff5f5';
       }
 
       let costClass = 'cost-pct-low';
       if (r.costPct > 3.0) costClass = 'cost-pct-high';
       else if (r.costPct > 1.8) costClass = 'cost-pct-mid';
 
-      const diffDisplay = r.diffBrl <= 0.005 
-        ? '<span class="val-loss zero">Maior valor 🏆</span>' 
-        : `<span class="val-loss">-${fmtBrl.format(r.diffBrl)}</span>`;
+      let diffDisplay = '';
+      if (isInvalid) {
+        diffDisplay = '<span style="color:#b91c1c; font-size:0.75rem; font-weight:600;">⚠️ Fora da faixa</span>';
+      } else if (r.diffBrl <= 0.005) {
+        diffDisplay = '<span class="val-loss zero">Maior valor 🏆</span>';
+      } else {
+        diffDisplay = `<span class="val-loss">-${fmtBrl.format(r.diffBrl)}</span>`;
+      }
 
       const scoreCellHtml = isBalanced 
-        ? `<td><span class="score-badge" title="0 = melhor equilíbrio da simulação">${r.scoreFormatted}</span></td>`
+        ? `<td><span class="score-badge" title="0 = melhor equilíbrio da simulação">${escapeHtml(r.scoreFormatted || '—')}</span></td>`
         : '';
+
+      const rankBadge = isInvalid
+        ? '<span class="rank-pill" style="background:#fee2e2; color:#b91c1c;">!</span>'
+        : `<span class="rank-pill ${rankCounter === 1 ? 'top-1' : (rankCounter === 2 ? 'top-2' : '')}">${rankCounter}</span>`;
 
       tr.innerHTML = `
         <td style="text-align: center;">
-          <span class="rank-pill ${idx === 0 ? 'top-1' : (idx === 1 ? 'top-2' : '')}">
-            ${idx + 1}
-          </span>
+          ${rankBadge}
         </td>
         <td>
           <div style="font-weight: 700; color: var(--text);">
-            ${escapeHtml(r.name)} ${isWinner ? '✨' : ''}
+            ${escapeHtml(r.name)} ${isWinner ? '✨' : ''} ${isInvalid ? '<span style="font-size:0.72rem; color:#b91c1c;">(Alerta)</span>' : ''}
           </div>
           <div>
             <span class="service-badge ${r.type === 'twostep' ? 'badge-twostep' : 'badge-direct'}">
@@ -1650,13 +1676,13 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
   // Inicialização
   document.addEventListener('DOMContentLoaded', () => {
     setFormattedDate();
-    setMode('auto'); // Inicia em modo Automático por padrão
 
-    // Ouvir alterações em todos os inputs para recalcular dinamicamente
-    const inputs = document.querySelectorAll('input[type="number"]');
+    // Ouvir alterações em todos os campos de entrada de texto
+    const inputs = document.querySelectorAll('input.form-input, input.amount-input');
     inputs.forEach(input => {
       input.addEventListener('input', calculateAll);
       input.addEventListener('change', calculateAll);
+      input.addEventListener('blur', calculateAll);
     });
 
     calculateAll();
